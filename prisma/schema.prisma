@@ -1,0 +1,21 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model HomeImages {
+  id       Int    @id @default(autoincrement())
+  url      String @unique
+  position Int
+  xAxis    Int
+  yAxis    Int
+}
+
+model AppProducts {
+  id          String        @id  @default(uuid())
+  title       String 
+  price       Decimal
+  info        String?       @unique
+
+  @@map("AppProducts")
+}

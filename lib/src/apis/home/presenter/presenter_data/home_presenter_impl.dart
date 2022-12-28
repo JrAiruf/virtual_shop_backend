@@ -14,6 +14,7 @@ class HomePresenterImpl implements IHomePresenter {
     final result = await presenter.getHomeImages();
 
     final body = result!.map((item) => {
+      'id':item.id,
       'url': item.url,
       'position': item.position,
       'xAxis': item.xAxis,
