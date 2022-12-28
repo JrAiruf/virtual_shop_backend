@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "virtual_shop_backend",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/virtual_shop_backend.dart"
+        }
+    ]
+}
