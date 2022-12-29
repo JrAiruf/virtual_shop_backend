@@ -11,11 +11,29 @@ model HomeImages {
   yAxis    Int
 }
 
+model AppCategories {
+  cat_id         String           @id @default(uuid())
+  title          String
+  iconImage      String
+  AppCatProducts AppCatProducts[]
+
+  @@map("AppCategories")
+}
+
 model AppProducts {
-  id          String        @id  @default(uuid())
-  title       String 
-  price       Decimal
-  info        String?       @unique
+  prod_id        String           @id @default(uuid())
+  title          String
+  price          Decimal
+  info           String?          @unique
+  AppCatProducts AppCatProducts[]
 
   @@map("AppProducts")
+}
+
+model AppCatProducts {
+  id       String        @id @default(uuid())
+  p_id     String
+  products AppProducts   @relation(fields: [p_id], references: [prod_id])
+  c_id     String
+  category AppCategories @relation(fields: [c_id], references: [cat_id])
 }

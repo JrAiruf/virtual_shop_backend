@@ -5,16 +5,16 @@ import 'package:virtual_shop_backend/src/apis/home/infra/models/home_images.dart
 import 'package:virtual_shop_backend/src/services/dot_env_service/dot_env_service.dart';
 import '../../infra/data/iget_home_images_datasource.dart';
 
-class HomeDatabaseImpl
-    implements IGetHomeImagesDatasource, Disposable {
+class HomeDatabaseImpl implements IGetHomeImagesDatasource, Disposable {
   HomeDatabaseImpl({required this.dotEnv}) {
     _init();
   }
 
   final DotEnvService dotEnv;
 
-  Future<List<Map<String, Map<String, dynamic>>>>? _query(String queryText,
-      {Map<String, String> variables = const {}}) async {
+  Future<List<Map<String, Map<String, dynamic>>>>? _imagesQuery(
+      String queryText,
+      {Map<String, dynamic> variables = const {}}) async {
     final connection = await completer.future;
     return await connection.mappedResultsQuery(
       queryText,
@@ -25,7 +25,7 @@ class HomeDatabaseImpl
   @override
   Future<List<HomeImagesModel>>? getHomeImages() async {
     try {
-      final result = await _query(
+      final result = await _imagesQuery(
         'SELECT id, url, "position", "xAxis", "yAxis" FROM "HomeImages";',
       );
       final imagesList = result
@@ -35,6 +35,15 @@ class HomeDatabaseImpl
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  @override
+  Future<List<HomeImagesModel>>? uploadImages({HomeImagesModel? images}) async {
+    final imageMap = images?.toMap();
+    final result = await _imagesQuery(
+        'INSERT INTO "HomeImages"(url, "position", "xAxis", "yAxis")VALUES (@url, @position, @xAxis, @yAxis);',
+        variables: imageMap!);
+    return result!.map((item) => HomeImagesModel.fromMap(item)).toList();
   }
 
   @override

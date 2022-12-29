@@ -3,15 +3,14 @@ import 'dart:convert';
 
 import '../../home_domain/entities/home_images.dart';
 
-class HomeImagesModel extends HomeImages {
+class HomeImagesModel implements HomeImages {
   int? id;
   String? url;
   int? position;
   int? xAxis;
   int? yAxis;
 
-  HomeImagesModel({this.id, this.url, this.position, this.xAxis, this.yAxis})
-      : super(0, '', 0, 0, 0);
+  HomeImagesModel({this.id, this.url, this.position, this.xAxis, this.yAxis});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

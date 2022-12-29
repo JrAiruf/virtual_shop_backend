@@ -6,5 +6,5 @@ class AppProducts {
   double? price;
   ProductInfo? info;
 
-  AppProducts({this.id, this.price, this.info});
+  AppProducts({this.id, this.price, this.title,this.info});
 }

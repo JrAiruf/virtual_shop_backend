@@ -31,7 +31,15 @@ class ProductModel extends AppProducts {
       id: map['id'] != null ? map['id'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
       price: map['price'] != null ? map['price'] as double : null,
-      info: map['info'] ,
+      info: map['info'],
+    );
+  }
+  static AppProducts toAppProduct(Map<String, dynamic> map) {
+    return AppProducts(
+      id: map['id'],
+      title: map['title'],
+      price: map['price'],
+      info: map['info'],
     );
   }
 
