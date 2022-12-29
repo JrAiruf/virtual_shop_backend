@@ -5,6 +5,7 @@ import '../../../../services/dot_env_service/dot_env_service.dart';
 import '../../infra/data/iproducts_datasource.dart';
 
 class ProductsDatabaseImpl implements IProductsDatasource {
+  
   ProductsDatabaseImpl({required this.dotEnv});
   final DotEnvService dotEnv;
   @override

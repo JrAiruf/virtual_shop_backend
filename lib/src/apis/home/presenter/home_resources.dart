@@ -11,7 +11,7 @@ class HomeResources extends Resource {
   List<Route> get routes => [Route.get('/images', getImages)];
 
   FutureOr<Response> getImages(Injector injector) {
-    final imagesPath = injector.get<IHomePresenter>();
-    return imagesPath.getHomeImages();
+    final ijImages = injector.get<IHomePresenter>();
+    return ijImages.getHomeImages();
   }
 }
