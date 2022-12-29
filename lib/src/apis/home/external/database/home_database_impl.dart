@@ -41,7 +41,7 @@ class HomeDatabaseImpl implements IGetHomeImagesDatasource, Disposable {
   Future<List<HomeImagesModel>>? uploadImages({HomeImagesModel? images}) async {
     final imageMap = images?.toMap();
     final result = await _imagesQuery(
-        'INSERT INTO "HomeImages"(url, "position", "xAxis", "yAxis")VALUES (@url, @position, @xAxis, @yAxis);',
+        'INSERT INTO "HomeImages"(url, "position", "xAxis", "yAxis")VALUES (@url, @position, @xAxis, @yAxis) RETURNIN id, url, position,xAxis, yAxis;',
         variables: imageMap!);
     return result!.map((item) => HomeImagesModel.fromMap(item)).toList();
   }

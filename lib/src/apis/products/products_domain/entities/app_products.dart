@@ -1,10 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:virtual_shop_backend/src/apis/products/products_domain/entities/product_info.dart';
-class AppProducts {
-  String? id;
-  String? title;
-  double? price;
-  ProductInfo? info;
+import 'app_categories.dart';
 
-  AppProducts({this.id, this.price, this.title,this.info});
+class AppProducts {
+  final String? id;
+  final String? title;
+  final String? description;
+  final double? price;
+  final AppCategories? category;
+  final List<String>? size;
+  final List<String>? images;
+
+  AppProducts({this.description, this.size, this.images, this.category,
+      this.id, this.price, this.title});
 }

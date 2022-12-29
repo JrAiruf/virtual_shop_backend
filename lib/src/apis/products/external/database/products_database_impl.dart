@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'package:postgres/postgres.dart';
+import 'package:virtual_shop_backend/src/apis/products/infra/models/category_model.dart';
 import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
 import '../../../../services/dot_env_service/dot_env_service.dart';
 import '../../infra/data/iproducts_datasource.dart';
@@ -10,8 +11,9 @@ class ProductsDatabaseImpl implements IProductsDatasource {
 
   final DotEnvService dotEnv;
 
-  Future<List<Map<String, Map<String, dynamic>>>>? _query(String queryText,
-      {Map<String, String> variables = const {}}) async {
+  Future<List<Map<String, Map<String, dynamic>>>>? _productsQuery(
+      String queryText,
+      {Map<String, dynamic> variables = const {}}) async {
     final connection = await completer.future;
     return await connection.mappedResultsQuery(
       queryText,
@@ -20,14 +22,50 @@ class ProductsDatabaseImpl implements IProductsDatasource {
   }
 
   @override
-  Future<List<ProductModel>>? getAllProducts() async {
+  Future<List<CategoryModel>>? getCategories() async {
+    final list = <CategoryModel>[];
+    try {
+      final result = await _productsQuery(
+        '',
+      );
+      return list;
+    } on Exception catch (e) {
+      throw Exception();
+    }
+  }
+
+  @override
+  Future<List<ProductModel>>? getProducts() async {
     final list = <ProductModel>[];
     try {
-  final result = await _query('');
-  return list;
-} on Exception catch (e) {
- throw Exception() ;
-}
+      final result = await _productsQuery('');
+      return list;
+    } on Exception catch (e) {
+      throw Exception();
+    }
+  }
+
+  @override
+  Future<List<CategoryModel>>? createCategories(
+      {CategoryModel? category}) async {
+    final categoryMap = category?.toMap();
+    final result = await _productsQuery(
+      'INSERT INTO "AppCategories"("title", "iconImage", "catProducts")VALUES (@title, @iconImage, @catProducts) RETURNING id, title, iconImage;',
+      variables: categoryMap!,
+    );
+    return result!
+        .map((item) => CategoryModel.fromMap(item['AppCategories']!))
+        .toList();
+  }
+
+  @override
+  Future<List<ProductModel>>? createProducts({ProductModel? product}) async {
+    final productMap = product?.toMap();
+    final result = await _productsQuery(
+      'INSERT INTO "AppProducts"("title", "price", "description", "images", "size", "catProducts")VALUES (@title, @price, @description, @images, @size, @catProducts) RETURNING id, title, price, description, images, size, catProducts;',
+      variables: productMap!,
+    );
+    return result!.map((item) => ProductModel.fromMap(item['AppProducts']!)).toList();
   }
 
   @override

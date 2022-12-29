@@ -15,7 +15,7 @@ model AppCategories {
   cat_id         String           @id @default(uuid())
   title          String
   iconImage      String
-  AppCatProducts AppCatProducts[]
+  catProducts AppCatProducts[]
 
   @@map("AppCategories")
 }
@@ -24,8 +24,10 @@ model AppProducts {
   prod_id        String           @id @default(uuid())
   title          String
   price          Decimal
-  info           String?          @unique
-  AppCatProducts AppCatProducts[]
+  description    String?
+  images         String[]
+  size           String[]
+  catProducts AppCatProducts[]
 
   @@map("AppProducts")
 }
