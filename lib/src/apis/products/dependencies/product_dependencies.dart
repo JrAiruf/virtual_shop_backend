@@ -7,7 +7,7 @@ import '../presenter/presenter_data/iproducts_presenter.dart';
 import '../presenter/presenter_data/products_presenter.dart';
 import '../presenter/products_resources.dart';
 import '../products_domain/products_repository/iproducts_repository.dart';
-import '../products_domain/usecases/get_all_products_impl.dart';
+import '../products_domain/usecases/products_and_categories_impl.dart';
 import '../products_domain/usecases/iproducts_and_categories.dart';
 
 abstract class ProductDependencies extends Module {

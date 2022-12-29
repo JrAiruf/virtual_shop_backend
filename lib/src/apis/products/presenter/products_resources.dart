@@ -2,14 +2,59 @@
 import 'dart:async';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_modular/shelf_modular.dart';
+import 'package:virtual_shop_backend/src/apis/products/infra/models/category_model.dart';
+import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
 import 'package:virtual_shop_backend/src/apis/products/presenter/presenter_data/iproducts_presenter.dart';
 
 class ProductsResources extends Resource {
   @override
-  List<Route> get routes => [Route.get('/products', getAllProducts)];
+  List<Route> get routes => [
+        Route.get('/products', getProducts),
+        Route.post('/categories', createCategory),
+        Route.post('/categories/products', createProducts),
+      ];
 
-  FutureOr<Response> getAllProducts(Injector injector) async {
+  FutureOr<Response> getProducts(Injector injector) async {
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.getAllProducts();
+    return presenter.getProducts();
+  }
+
+  FutureOr<Response> createCategory(
+      Injector injector, ModularArguments? arguments) async {
+    final presenter = injector.get<IProductsPresenter>();
+    final category = CategoryModel.fromMap(arguments!.data);
+    return presenter.createCategory(category: category);
+  }
+  FutureOr<Response> createProducts(
+      Injector injector, ModularArguments? arguments) async {
+    final presenter = injector.get<IProductsPresenter>();
+    final product = ProductModel.fromMap(arguments!.data);
+    return presenter.createProduct(product: product);
   }
 }
+
+
+
+/* 
+{
+    "id": "{{$randomUUID}}",
+    "title": "Produto Teste1",
+    "description": "Alta Qualidade",
+    "price": 45,
+    "images": [
+        "https: //images.pexels.com/photos/2294342/pexels-photo-2294342.jpeg?auto=compress&cs=tinysrgb&w=600",
+        "https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=600",
+        "https://images.pexels.com/photos/991509/pexels-photo-991509.jpeg?auto=compress&cs=tinysrgb&w=600"
+    ],
+    "size": [
+        "PP",
+        "P",
+        "M",
+        "G",
+        "GG",
+        "XG"
+    ],
+    "category": "Camisetas"
+}
+
+ */

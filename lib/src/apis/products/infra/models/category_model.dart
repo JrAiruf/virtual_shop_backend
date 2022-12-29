@@ -25,7 +25,7 @@ class CategoryModel {
       id: map['id'] != null ? map['id'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
       categoryIcon: map['categoryIcon'],
-      products: map['products'],
+      products: [AppProducts()],
     );
   }
   static AppCategories toAppCategory(Map<String, dynamic> map) {

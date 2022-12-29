@@ -28,12 +28,14 @@ class GetAllProductsRepo implements IProductsRepository {
   Future<List<AppCategories>>? createCategories(
       {CategoryModel? category}) async {
     final list = await datasource.createCategories(category: category!);
-    return list!.map((item) => CategoryModel.toAppCategory(item.toMap())).toList();
+    final categoryList = list!.map((item) => CategoryModel.toAppCategory(item.toMap())).toList();
+    return categoryList;
   }
 
   @override
   Future<List<AppProducts>>? createProducts({ProductModel? product}) async {
-   final list = await datasource.createProducts(product: product!);
-    return list!.map((item) => ProductModel.toAppProduct(item.toMap())).toList();
+    final list = await datasource.createProducts(product: product!);
+    final productList = list!.map((item) => ProductModel.toAppProduct(item.toMap())).toList();
+    return productList;
   }
 }

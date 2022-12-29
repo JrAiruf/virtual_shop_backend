@@ -40,10 +40,13 @@ class HomeDatabaseImpl implements IGetHomeImagesDatasource, Disposable {
   @override
   Future<List<HomeImagesModel>>? uploadImages({HomeImagesModel? images}) async {
     final imageMap = images?.toMap();
+    imageMap!.remove('id');
     final result = await _imagesQuery(
-        'INSERT INTO "HomeImages"(url, "position", "xAxis", "yAxis")VALUES (@url, @position, @xAxis, @yAxis) RETURNIN id, url, position,xAxis, yAxis;',
-        variables: imageMap!);
-    return result!.map((item) => HomeImagesModel.fromMap(item)).toList();
+        'INSERT INTO "HomeImages"(url, position, "xAxis", "yAxis") VALUES (@url, @position, @xAxis, @yAxis) RETURNING id, url, position,"xAxis", "yAxis";',
+        variables: imageMap);
+    return result!
+        .map((item) => HomeImagesModel.fromMap(item["HomeImages"]!))
+        .toList();
   }
 
   @override

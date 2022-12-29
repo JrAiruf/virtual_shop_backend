@@ -12,6 +12,16 @@ class HomeRepoImpl implements HomeRepository {
   @override
   Future<List<HomeImages>> getHomeImages() async {
     final list = await datasource.getHomeImages()!;
-    return  list.map((item) => HomeImagesModel.toHomeImages(item.toMap())).toList();
+    return list
+        .map((item) => HomeImagesModel.toHomeImages(item.toMap()))
+        .toList();
+  }
+
+  @override
+  Future<List<HomeImages>> uploadImages({HomeImagesModel? image}) async {
+    final list = await datasource.uploadImages(images: image)!;
+    final homeImagesList =
+        list.map((item) => HomeImagesModel.toHomeImages(item.toMap())).toList();
+    return homeImagesList;
   }
 }

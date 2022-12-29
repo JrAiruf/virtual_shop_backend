@@ -1,13 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'package:postgres/postgres.dart';
+import 'package:shelf_modular/shelf_modular.dart';
 import 'package:virtual_shop_backend/src/apis/products/infra/models/category_model.dart';
 import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
 import '../../../../services/dot_env_service/dot_env_service.dart';
 import '../../infra/data/iproducts_datasource.dart';
 
-class ProductsDatabaseImpl implements IProductsDatasource {
-  ProductsDatabaseImpl({required this.dotEnv});
+class ProductsDatabaseImpl implements IProductsDatasource,Disposable {
+  ProductsDatabaseImpl({required this.dotEnv}){
+    _init();
+  }
 
   final DotEnvService dotEnv;
 
@@ -49,12 +52,13 @@ class ProductsDatabaseImpl implements IProductsDatasource {
   Future<List<CategoryModel>>? createCategories(
       {CategoryModel? category}) async {
     final categoryMap = category?.toMap();
+    categoryMap!.remove('id');
     final result = await _productsQuery(
       'INSERT INTO "AppCategories"("title", "iconImage", "catProducts")VALUES (@title, @iconImage, @catProducts) RETURNING id, title, iconImage;',
-      variables: categoryMap!,
+      variables: categoryMap,
     );
     return result!
-        .map((item) => CategoryModel.fromMap(item['AppCategories']!))
+        .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
         .toList();
   }
 

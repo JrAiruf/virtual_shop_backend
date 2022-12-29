@@ -15,6 +15,6 @@ abstract class HomeDependencies extends Module {
     Bind.singleton<IGetHomeImagesDatasource>((i) => HomeDatabaseImpl(dotEnv: i())),
     Bind.singleton<HomeRepository>((i) => HomeRepoImpl(datasource: i())),
     Bind.singleton<IGetHomeImages>((i) => GetHomeImagesImpl(repository: i())),
-    Bind.singleton<IHomePresenter>((i) => HomePresenterImpl(presenter: i())),
+    Bind.singleton<IHomePresenter>((i) => HomePresenterImpl(usecase: i())),
   ];
 }

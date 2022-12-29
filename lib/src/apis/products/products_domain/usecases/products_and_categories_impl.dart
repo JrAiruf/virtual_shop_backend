@@ -11,15 +11,16 @@ class ProductsAndCategoriesImpl implements IProductsAndCategories {
   final IProductsRepository repository;
 
   @override
-  Future<List<AppCategories>>? createCategories({CategoryModel? category}) {
-    // TODO: implement createCategories
-    throw UnimplementedError();
+  Future<List<AppCategories>>? createCategories(
+      {CategoryModel? category}) async {
+    final result = await repository.createCategories(category: category!);
+    return result!;
   }
 
   @override
-  Future<List<AppProducts>>? createProducts({ProductModel? product}) {
-    // TODO: implement createProducts
-    throw UnimplementedError();
+  Future<List<AppProducts>>? createProducts({ProductModel? product}) async {
+    final result = await repository.createProducts(product: product!);
+    return result!;
   }
 
   @override

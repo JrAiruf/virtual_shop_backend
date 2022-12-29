@@ -9,8 +9,8 @@ class ProductModel extends AppProducts {
   String? description;
   double? price;
   AppCategories? category;
-  List<String>? size;
-  List<String>? images;
+  List<dynamic>? size;
+  List<dynamic>? images;
 
   ProductModel(
       {this.description,
@@ -39,8 +39,8 @@ class ProductModel extends AppProducts {
       title: map['title'] != null ? map['title'] as String : null,
       description:
           map['description'] != null ? map['description'] as String : null,
-      price: map['price'] != null ? map['price'] as double : null,
-      category: map['category'],
+      price: map['price'] * 1.0,
+      category: AppCategories(),
       size: map['size'],
       images: map['images'],
     );
@@ -51,7 +51,7 @@ class ProductModel extends AppProducts {
       title: map['title'],
       description: map['description'],
       price: map['price'],
-      category: map['category'],
+      category: AppCategories(),
       size: map['size'],
       images: map['images'],
     );

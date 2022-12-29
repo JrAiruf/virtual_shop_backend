@@ -7,8 +7,8 @@ class AppProducts {
   final String? description;
   final double? price;
   final AppCategories? category;
-  final List<String>? size;
-  final List<String>? images;
+  final List<dynamic>? size;
+  final List<dynamic>? images;
 
   AppProducts({this.description, this.size, this.images, this.category,
       this.id, this.price, this.title});
