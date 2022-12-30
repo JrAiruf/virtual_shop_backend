@@ -7,8 +7,8 @@ import 'package:virtual_shop_backend/src/apis/products/infra/models/product_mode
 import '../../../../services/dot_env_service/dot_env_service.dart';
 import '../../infra/data/iproducts_datasource.dart';
 
-class ProductsDatabaseImpl implements IProductsDatasource,Disposable {
-  ProductsDatabaseImpl({required this.dotEnv}){
+class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
+  ProductsDatabaseImpl({required this.dotEnv}) {
     _init();
   }
 
@@ -52,10 +52,9 @@ class ProductsDatabaseImpl implements IProductsDatasource,Disposable {
   Future<List<CategoryModel>>? createCategories(
       {CategoryModel? category}) async {
     final categoryMap = category?.toMap();
-    categoryMap!.remove('id');
     final result = await _productsQuery(
-      'INSERT INTO "AppCategories"("title", "iconImage", "catProducts")VALUES (@title, @iconImage, @catProducts) RETURNING id, title, iconImage;',
-      variables: categoryMap,
+      'INSERT INTO "AppCategories"("categoryid","title", "iconImage", "products")VALUES (@categoryid, @title, @iconImage, @products) RETURNING categoryid, title, iconImage @products;',
+      variables: categoryMap!,
     );
     return result!
         .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
@@ -65,11 +64,14 @@ class ProductsDatabaseImpl implements IProductsDatasource,Disposable {
   @override
   Future<List<ProductModel>>? createProducts({ProductModel? product}) async {
     final productMap = product?.toMap();
+    productMap!.remove('category');
     final result = await _productsQuery(
-      'INSERT INTO "AppProducts"("title", "price", "description", "images", "size", "catProducts")VALUES (@title, @price, @description, @images, @size, @catProducts) RETURNING id, title, price, description, images, size, catProducts;',
-      variables: productMap!,
+      'INSERT INTO "AppProducts"("productid", "title", "price", "description", "images", "size")VALUES (@productid, @title, @price, @description, @images, @size) RETURNING productid, title, price, description, images, size;',
+      variables: productMap,
     );
-    return result!.map((item) => ProductModel.fromMap(item['AppProducts']!)).toList();
+    return result!
+        .map((item) => ProductModel.fromMap(item["AppProducts"]!))
+        .toList();
   }
 
   @override

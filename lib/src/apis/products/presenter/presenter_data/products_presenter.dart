@@ -22,7 +22,6 @@ class ProductsPresenterImpl implements IProductsPresenter {
               'description': item.description,
               'images': item.images,
               'size': item.size,
-              'category': item.category,
               'price': item.price,
             })
         .toList();
@@ -39,14 +38,17 @@ class ProductsPresenterImpl implements IProductsPresenter {
   @override
   FutureOr<Response> createCategory({CategoryModel? category}) async {
     final result = await usecase.createCategories(category: category!);
-    final body = result
-        ?.map((item) => {
-              'id': item.id,
-              'title': item.title,
-              'categoryIcon': item.categoryIcon,
-              'products': item.products,
-            })
-        .toList();
+    final body = result?.map((item) {
+      final productList = item.products!
+          .map((item) => ProductModel.fromAppProduct(item))
+          .toList();
+      return {
+        'id': item.id,
+        'title': item.title,
+        'categoryIcon': item.categoryIcon,
+        'products': productList
+      };
+    }).toList();
     final categoryList = jsonEncode(body);
     return Response(200, body: categoryList, headers: {
       'content-type': 'application/json',
@@ -64,7 +66,6 @@ class ProductsPresenterImpl implements IProductsPresenter {
               'price': item.price,
               'images': item.images,
               'size': item.size,
-              'category': AppCategories(title: item.category?.title ?? '') ,
             })
         .toList();
     final productsList = jsonEncode(body);
@@ -76,15 +77,17 @@ class ProductsPresenterImpl implements IProductsPresenter {
   @override
   FutureOr<Response> getCategories() async {
     final result = await usecase.getCategories();
-    final productsList = result!
-        .map((item) => {
-              'id': item.id,
-              'title': item.title,
-              'categoryIcon': item.categoryIcon,
-              'products': item.products,
-            })
-        .toList();
-    final body = jsonEncode(productsList);
+    final categoriesList = result!.map((item) {
+      final productList =
+          item.products!.map((product) => ProductModel.fromAppProduct(product));
+      return {
+        'id': item.id,
+        'title': item.title,
+        'categoryIcon': item.categoryIcon,
+        'products': productList,
+      };
+    }).toList();
+    final body = jsonEncode(categoriesList);
     return Response(
       200,
       body: body,

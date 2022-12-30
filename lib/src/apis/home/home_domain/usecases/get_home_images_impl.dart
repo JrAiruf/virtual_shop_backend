@@ -6,18 +6,18 @@ import 'package:virtual_shop_backend/src/apis/home/infra/models/home_images.dart
 import '../home_repository/home_repository.dart';
 
 class GetHomeImagesImpl implements IGetHomeImages {
-  GetHomeImagesImpl({this.repository});
+  GetHomeImagesImpl({required this.repository});
 
-  HomeRepository? repository;
+  final HomeRepository repository;
   @override
   Future<List<HomeImages>>? getHomeImages() async {
-    final result = await repository?.getHomeImages();
-    return result!;
+    final result = await repository.getHomeImages();
+    return result;
   }
 
   @override
   Future<List<HomeImages>>? uploadImages({HomeImagesModel? image}) async {
-   final result = await repository?.uploadImages(image: image!);
-    return result!;
+   final result = await repository.uploadImages(image: image!);
+    return result;
   }
 }
