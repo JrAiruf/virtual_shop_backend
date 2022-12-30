@@ -13,29 +13,27 @@ class GetAllProductsRepo implements IProductsRepository {
   @override
   Future<List<AppProducts>> getProducts() async {
     final list = await datasource.getProducts();
-    return list!
-        .map((item) => ProductModel.toAppProduct(item.toMap()))
-        .toList();
+    return list!.map((item) => ProductModel.toAppProduct(product: item)).toList();
   }
 
   @override
-  Future<List<AppCategories>>? getCategories() {
-    // TODO: implement getCategories
-    throw UnimplementedError();
+  Future<List<AppCategories>>? getCategories() async {
+    final list = await datasource.getCategories();
+    return list!.map((item) => CategoryModel.toAppCategory(category: item)).toList();
   }
 
   @override
   Future<List<AppCategories>>? createCategories(
       {CategoryModel? category}) async {
     final list = await datasource.createCategories(category: category!);
-    final categoryList = list!.map((item) => CategoryModel.toAppCategory(item.toMap())).toList();
-    return categoryList;
+    return list!.map((item) => CategoryModel.toAppCategory(category: category)).toList();
+    
   }
 
   @override
   Future<List<AppProducts>>? createProducts({ProductModel? product}) async {
     final list = await datasource.createProducts(product: product!);
-    final productList = list!.map((item) => ProductModel.toAppProduct(item.toMap())).toList();
-    return productList;
+  return list!.map((item) => ProductModel.toAppProduct(product: product)).toList();
+  
   }
 }

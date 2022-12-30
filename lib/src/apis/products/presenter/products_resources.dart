@@ -9,11 +9,16 @@ import 'package:virtual_shop_backend/src/apis/products/presenter/presenter_data/
 class ProductsResources extends Resource {
   @override
   List<Route> get routes => [
-        Route.get('/products', getProducts),
+        Route.get('/categories/products', getProducts),
+        Route.get('/categories', getCategories),
         Route.post('/categories', createCategory),
         Route.post('/categories/products', createProducts),
       ];
 
+  FutureOr<Response> getCategories(Injector injector) async {
+    final presenter = injector.get<IProductsPresenter>();
+    return presenter.getCategories();
+  }
   FutureOr<Response> getProducts(Injector injector) async {
     final presenter = injector.get<IProductsPresenter>();
     return presenter.getProducts();
@@ -21,13 +26,14 @@ class ProductsResources extends Resource {
 
   FutureOr<Response> createCategory(
       Injector injector, ModularArguments arguments) async {
-    final category = CategoryModel.fromMap(arguments.data!);
+    final category = CategoryModel.fromMap(arguments.data);
     final presenter = injector.get<IProductsPresenter>();
     return presenter.createCategory(category: category);
   }
+
   FutureOr<Response> createProducts(
       Injector injector, ModularArguments arguments) async {
-    final product = ProductModel.fromMap(arguments.data!);
+    final product = ProductModel.fromMap(arguments.data);
     final presenter = injector.get<IProductsPresenter>();
     return presenter.createProduct(product: product);
   }

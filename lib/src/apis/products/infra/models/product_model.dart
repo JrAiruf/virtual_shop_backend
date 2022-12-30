@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:virtual_shop_backend/src/apis/products/products_domain/entities/app_products.dart';
 
 class ProductModel extends AppProducts {
-  String? id;
+  String? productid;
   String? title;
   String? description;
   String? cid;
-  double? price;
+  int? price;
   List<dynamic>? size;
   List<dynamic>? images;
 
@@ -16,13 +16,13 @@ class ProductModel extends AppProducts {
       this.size,
       this.images,
       this.cid,
-      this.id,
+      this.productid,
       this.title,
       this.price});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'productid': productid,
       'cid': cid,
       'title': title,
       'description': description,
@@ -34,31 +34,31 @@ class ProductModel extends AppProducts {
 
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
-      id: map['id'] != null ? map['id'] as String : null,
+      productid: map['productid'] != null ? map['productid'] as String : null,
       cid: map['cid'] != null ? map['cid'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
       description:
           map['description'] != null ? map['description'] as String : null,
-      price: map['price'] * 1.0,
-      size: map['size'],
-      images: map['images'],
-    );
-  }
-  static AppProducts toAppProduct(Map<String, dynamic> map) {
-    return AppProducts(
-      id: map['id'],
-      cid: map['cid'],
-      title: map['title'],
-      description: map['description'],
       price: map['price'],
       size: map['size'],
       images: map['images'],
     );
   }
+  static AppProducts toAppProduct({ProductModel? product}) {
+    return AppProducts(
+      productid:product!.productid,
+      cid:product.cid,
+      title:product.title,
+      description:product.description,
+      price:product.price,
+      size:product.size,
+      images:product.images,
+    );
+  }
 
   static ProductModel fromAppProduct(AppProducts proudct) {
     return ProductModel(
-      id: proudct.id,
+      productid: proudct.productid,
       cid: proudct.cid,
       title: proudct.title,
       description: proudct.description,

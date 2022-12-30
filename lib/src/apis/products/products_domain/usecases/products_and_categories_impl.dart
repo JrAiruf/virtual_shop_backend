@@ -24,14 +24,14 @@ class ProductsAndCategoriesImpl implements IProductsAndCategories {
   }
 
   @override
-  Future<List<AppCategories>>? getCategories() {
-    // TODO: implement getCategories
-    throw UnimplementedError();
+  Future<List<AppCategories>>? getCategories() async {
+    final result = await repository.getCategories();
+    return result!;
   }
 
   @override
-  Future<List<AppProducts>>? getProducts() {
-    // TODO: implement getProducts
-    throw UnimplementedError();
+  Future<List<AppProducts>>? getProducts() async {
+      final result = await repository.getProducts();
+    return result!;
   }
 }

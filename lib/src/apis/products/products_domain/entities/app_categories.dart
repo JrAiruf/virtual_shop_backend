@@ -2,10 +2,10 @@
 import 'package:virtual_shop_backend/src/apis/products/products_domain/entities/app_products.dart';
 
 class AppCategories {
-  String? id;
+  String? categoryid;
   String? title;
-  String? categoryIcon;
+  String? iconimage;
   List<AppProducts>? products;
 
-  AppCategories({this.id, this.title, this.categoryIcon, this.products});
+  AppCategories({this.categoryid, this.title, this.iconimage, this.products});
 }

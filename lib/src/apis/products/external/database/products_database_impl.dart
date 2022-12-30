@@ -26,25 +26,30 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
 
   @override
   Future<List<CategoryModel>>? getCategories() async {
-    final list = <CategoryModel>[];
     try {
       final result = await _productsQuery(
-        '',
+        'SELECT categoryid, title, iconimage FROM public."AppCategories";',
       );
-      return list;
+      final categoriesList = result!
+          .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
+          .toList();
+      return categoriesList;
     } on Exception catch (e) {
-      throw Exception();
+      throw Exception(e.toString());
     }
   }
 
   @override
   Future<List<ProductModel>>? getProducts() async {
-    final list = <ProductModel>[];
     try {
-      final result = await _productsQuery('');
-      return list;
+      final result = await _productsQuery(
+        'SELECT productid, title, price, description, images, cid, size FROM public."AppProducts";',
+      );
+      final productsList =
+          result!.map((item) => ProductModel.fromMap(item["AppProducts"]!)).toList();
+      return productsList;
     } on Exception catch (e) {
-      throw Exception();
+      throw Exception(e.toString());
     }
   }
 
@@ -52,9 +57,10 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   Future<List<CategoryModel>>? createCategories(
       {CategoryModel? category}) async {
     final categoryMap = category?.toMap();
+    categoryMap!.remove('id');
     final result = await _productsQuery(
-      'INSERT INTO "AppCategories"("categoryid","title", "iconImage", "products")VALUES (@categoryid, @title, @iconImage, @products) RETURNING categoryid, title, iconImage @products;',
-      variables: categoryMap!,
+      'INSERT INTO "AppCategories"(categoryid, title, iconimage) VALUES (@categoryid, @title, @iconimage) RETURNING categoryid, title, iconimage;',
+      variables: categoryMap,
     );
     return result!
         .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
@@ -64,10 +70,9 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   @override
   Future<List<ProductModel>>? createProducts({ProductModel? product}) async {
     final productMap = product?.toMap();
-    productMap!.remove('category');
     final result = await _productsQuery(
-      'INSERT INTO "AppProducts"("productid", "title", "price", "description", "images", "size")VALUES (@productid, @title, @price, @description, @images, @size) RETURNING productid, title, price, description, images, size;',
-      variables: productMap,
+      'INSERT INTO "AppProducts"(productid, title, price, description, images, size) VALUES (@productid, @title, @price, @description, @images, @size) RETURNING productid, title, price, description, images, size;',
+      variables: productMap!,
     );
     return result!
         .map((item) => ProductModel.fromMap(item["AppProducts"]!))

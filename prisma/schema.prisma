@@ -14,10 +14,10 @@ model HomeImages {
 model AppProducts {
   productid   String         @id @default(uuid())
   title       String
-  price       Decimal
+  price       Int
   description String
   images      String[]
-  productSize String[]
+  size String[]
   category    AppCategories? @relation(fields: [cid], references: [categoryid])
   cid  String?
 }
@@ -25,6 +25,6 @@ model AppProducts {
 model AppCategories {
   categoryid String        @id @default(uuid())
   title      String
-  iconImage  String
+  iconimage  String
   products   AppProducts[]
 }

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:virtual_shop_backend/src/apis/products/presenter/presenter_data/iproducts_presenter.dart';
-import 'package:virtual_shop_backend/src/apis/products/products_domain/entities/app_categories.dart';
 import '../../infra/models/category_model.dart';
 import '../../infra/models/product_model.dart';
 import '../../products_domain/usecases/iproducts_and_categories.dart';
@@ -17,7 +16,7 @@ class ProductsPresenterImpl implements IProductsPresenter {
     final result = await usecase.getProducts();
     final productsList = result!
         .map((item) => {
-              'id': item.id,
+              'productid': item.productid,
               'title': item.title,
               'description': item.description,
               'images': item.images,
@@ -39,14 +38,10 @@ class ProductsPresenterImpl implements IProductsPresenter {
   FutureOr<Response> createCategory({CategoryModel? category}) async {
     final result = await usecase.createCategories(category: category!);
     final body = result?.map((item) {
-      final productList = item.products!
-          .map((item) => ProductModel.fromAppProduct(item))
-          .toList();
       return {
-        'id': item.id,
+        'categoryid': item.categoryid,
         'title': item.title,
-        'categoryIcon': item.categoryIcon,
-        'products': productList
+        'iconimage': item.iconimage,
       };
     }).toList();
     final categoryList = jsonEncode(body);
@@ -60,7 +55,7 @@ class ProductsPresenterImpl implements IProductsPresenter {
     final result = await usecase.createProducts(product: product!);
     final body = result
         ?.map((item) => {
-              'id': item.id,
+              'productid': item.productid,
               'title': item.title,
               'description': item.description,
               'price': item.price,
@@ -78,13 +73,10 @@ class ProductsPresenterImpl implements IProductsPresenter {
   FutureOr<Response> getCategories() async {
     final result = await usecase.getCategories();
     final categoriesList = result!.map((item) {
-      final productList =
-          item.products!.map((product) => ProductModel.fromAppProduct(product));
       return {
-        'id': item.id,
+        'categoryid': item.categoryid,
         'title': item.title,
-        'categoryIcon': item.categoryIcon,
-        'products': productList,
+        'iconimage': item.iconimage,
       };
     }).toList();
     final body = jsonEncode(categoriesList);
