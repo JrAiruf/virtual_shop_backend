@@ -12,8 +12,8 @@ class ProductsAndCategoriesImpl implements IProductsAndCategories {
 
   @override
   Future<List<AppCategories>>? createCategories(
-      {CategoryModel? category}) async {
-    final result = await repository.createCategories(category: category!);
+       {CategoryModel? category, ProductModel? product}) async {
+    final result = await repository.createCategories(category: category!,product: product!);
     return result!;
   }
 

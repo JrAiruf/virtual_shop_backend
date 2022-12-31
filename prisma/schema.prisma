@@ -12,19 +12,20 @@ model HomeImages {
 }
 
 model AppProducts {
-  productid   String         @id @default(uuid())
-  title       String
-  price       Int
-  description String
-  images      String[]
-  size String[]
-  category    AppCategories? @relation(fields: [cid], references: [categoryid])
-  cid  String?
+  productid     String         @id @default(uuid())
+  title         String
+  price         Int
+  description   String
+  images        String[]
+  cid           String?
+  size          String[]
+  AppCategories AppCategories? @relation(fields: [cid], references: [categoryid])
 }
 
 model AppCategories {
-  categoryid String        @id @default(uuid())
-  title      String
-  iconimage  String
-  products   AppProducts[]
+  categoryid  String        @id @default(uuid())
+  title       String
+  iconimage   String
+  products    String[]      @db.VarChar
+  AppProducts AppProducts[]
 }

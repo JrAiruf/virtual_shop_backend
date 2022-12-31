@@ -6,6 +6,7 @@ import 'package:virtual_shop_backend/src/apis/products/infra/models/category_mod
 import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
 import '../../../../services/dot_env_service/dot_env_service.dart';
 import '../../infra/data/iproducts_datasource.dart';
+import '../../utils/database_querys.dart';
 
 class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   ProductsDatabaseImpl({required this.dotEnv}) {
@@ -18,18 +19,20 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
       String queryText,
       {Map<String, dynamic> variables = const {}}) async {
     final connection = await completer.future;
-    return await connection.mappedResultsQuery(
-      queryText,
-      substitutionValues: variables,
-    );
+    return await connection.mappedResultsQuery(queryText,
+        substitutionValues: variables);
+  }
+
+  Future<PostgreSQLResult>? _singleItemQuery(String queryText,
+      {Map<String, dynamic> variables = const {}}) async {
+    final connection = await completer.future;
+    return connection.query(queryText);
   }
 
   @override
   Future<List<CategoryModel>>? getCategories() async {
     try {
-      final result = await _productsQuery(
-        'SELECT categoryid, title, iconimage FROM public."AppCategories";',
-      );
+      final result = await _productsQuery(DatabaseQuerys.getCategoriesQuery);
       final categoriesList = result!
           .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
           .toList();
@@ -42,11 +45,10 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   @override
   Future<List<ProductModel>>? getProducts() async {
     try {
-      final result = await _productsQuery(
-        'SELECT productid, title, price, description, images, cid, size FROM public."AppProducts";',
-      );
-      final productsList =
-          result!.map((item) => ProductModel.fromMap(item["AppProducts"]!)).toList();
+      final result = await _productsQuery(DatabaseQuerys.getProductsQuery);
+      final productsList = result!
+          .map((item) => ProductModel.fromMap(item["AppProducts"]!))
+          .toList();
       return productsList;
     } on Exception catch (e) {
       throw Exception(e.toString());
@@ -55,13 +57,10 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
 
   @override
   Future<List<CategoryModel>>? createCategories(
-      {CategoryModel? category}) async {
+      {CategoryModel? category, ProductModel? product}) async {
     final categoryMap = category?.toMap();
-    categoryMap!.remove('id');
-    final result = await _productsQuery(
-      'INSERT INTO "AppCategories"(categoryid, title, iconimage) VALUES (@categoryid, @title, @iconimage) RETURNING categoryid, title, iconimage;',
-      variables: categoryMap,
-    );
+    final result = await _productsQuery(DatabaseQuerys.createCategoryQuery,
+        variables: categoryMap!);
     return result!
         .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
         .toList();
@@ -70,10 +69,8 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   @override
   Future<List<ProductModel>>? createProducts({ProductModel? product}) async {
     final productMap = product?.toMap();
-    final result = await _productsQuery(
-      'INSERT INTO "AppProducts"(productid, title, price, description, images, size) VALUES (@productid, @title, @price, @description, @images, @size) RETURNING productid, title, price, description, images, size;',
-      variables: productMap!,
-    );
+    final result = await _productsQuery(DatabaseQuerys.createProductsQuery,
+        variables: productMap!);
     return result!
         .map((item) => ProductModel.fromMap(item["AppProducts"]!))
         .toList();
@@ -100,5 +97,14 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
     );
     await connection.open();
     completer.complete(connection);
+  }
+
+  @override
+  Future<ProductModel>? getProductById({ProductModel? product}) async {
+    final result = await _singleItemQuery(
+      DatabaseQuerys.getProductById,
+    );
+    final product = result!.map((item) => item).toList();
+    return ProductModel();
   }
 }

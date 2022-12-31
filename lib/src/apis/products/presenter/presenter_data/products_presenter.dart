@@ -35,19 +35,35 @@ class ProductsPresenterImpl implements IProductsPresenter {
   }
 
   @override
-  FutureOr<Response> createCategory({CategoryModel? category}) async {
-    final result = await usecase.createCategories(category: category!);
-    final body = result?.map((item) {
+  FutureOr<Response> createCategory(
+      {CategoryModel? category, ProductModel? product}) async {
+    final categoryList = await usecase.createCategories(category: category!,product: product!);
+    final cat = categoryList?.map((item) {
+       final productMap = {
+      'productid': product.productid,
+      'title': product.title,
+      'price': product.price,
+      'description': product.description,
+      'images': product.images,
+      'cid':item.categoryid,
+      'size': product.size,
+    };
       return {
         'categoryid': item.categoryid,
         'title': item.title,
         'iconimage': item.iconimage,
+        'products': productMap,
       };
     }).toList();
-    final categoryList = jsonEncode(body);
-    return Response(200, body: categoryList, headers: {
-      'content-type': 'application/json',
-    });
+
+    final categories = jsonEncode(cat);
+    return Response(
+      200,
+      body: categories,
+      headers: {
+        'content-type': 'application/json',
+      },
+    );
   }
 
   @override
@@ -64,21 +80,27 @@ class ProductsPresenterImpl implements IProductsPresenter {
             })
         .toList();
     final productsList = jsonEncode(body);
-    return Response(200, body: productsList, headers: {
-      'content-type': 'application/json',
-    });
+    return Response(
+      200,
+      body: productsList,
+      headers: {
+        'content-type': 'application/json',
+      },
+    );
   }
 
   @override
   FutureOr<Response> getCategories() async {
     final result = await usecase.getCategories();
-    final categoriesList = result!.map((item) {
-      return {
-        'categoryid': item.categoryid,
-        'title': item.title,
-        'iconimage': item.iconimage,
-      };
-    }).toList();
+    final categoriesList = result!.map(
+      (item) {
+        return {
+          'categoryid': item.categoryid,
+          'title': item.title,
+          'iconimage': item.iconimage,
+        };
+      },
+    ).toList();
     final body = jsonEncode(categoriesList);
     return Response(
       200,

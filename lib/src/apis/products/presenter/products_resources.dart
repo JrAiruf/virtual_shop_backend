@@ -27,8 +27,9 @@ class ProductsResources extends Resource {
   FutureOr<Response> createCategory(
       Injector injector, ModularArguments arguments) async {
     final category = CategoryModel.fromMap(arguments.data);
+    final product = ProductModel.fromMap(arguments.data["products"]);
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.createCategory(category: category);
+    return presenter.createCategory(category: category,product: product);
   }
 
   FutureOr<Response> createProducts(

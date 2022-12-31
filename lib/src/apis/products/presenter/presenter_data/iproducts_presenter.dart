@@ -7,5 +7,5 @@ abstract class IProductsPresenter {
   FutureOr<Response> getProducts();
   FutureOr<Response> getCategories();
   FutureOr<Response> createProduct({ProductModel product});
-  FutureOr<Response> createCategory({CategoryModel category});
+  FutureOr<Response> createCategory({CategoryModel category, ProductModel product});
 }

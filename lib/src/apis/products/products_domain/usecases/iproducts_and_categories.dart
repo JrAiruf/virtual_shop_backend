@@ -7,5 +7,5 @@ abstract class IProductsAndCategories {
   Future<List<AppProducts>>? getProducts();
   Future<List<AppProducts>>? createProducts({ProductModel product});
   Future<List<AppCategories>>? getCategories();
-  Future<List<AppCategories>>? createCategories({CategoryModel category});
+  Future<List<AppCategories>>? createCategories( {CategoryModel category, ProductModel product});
 }

@@ -24,8 +24,8 @@ class GetAllProductsRepo implements IProductsRepository {
 
   @override
   Future<List<AppCategories>>? createCategories(
-      {CategoryModel? category}) async {
-    final list = await datasource.createCategories(category: category!);
+      {CategoryModel? category, ProductModel? product}) async {
+    final list = await datasource.createCategories(category: category!, product: product!);
     return list!.map((item) => CategoryModel.toAppCategory(category: category)).toList();
     
   }

@@ -3,7 +3,8 @@ import 'package:virtual_shop_backend/src/apis/products/infra/models/product_mode
 
 abstract class IProductsDatasource {
   Future<List<ProductModel>>? getProducts();
+  Future<ProductModel>? getProductById({ProductModel product});
   Future<List<ProductModel>>? createProducts({ProductModel product});
   Future<List<CategoryModel>>? getCategories();
-  Future<List<CategoryModel>>? createCategories({CategoryModel category});
+  Future<List<CategoryModel>>? createCategories({CategoryModel category, ProductModel product});
 }
