@@ -18,21 +18,31 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   Future<List<Map<String, Map<String, dynamic>>>>? _productsQuery(
       String queryText,
       {Map<String, dynamic> variables = const {}}) async {
-    final connection = await completer.future;
-    return await connection.mappedResultsQuery(queryText,
-        substitutionValues: variables);
+    try {
+      final connection = await completer.future;
+      return await connection.mappedResultsQuery(queryText,
+          substitutionValues: variables);
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   Future<PostgreSQLResult>? _singleItemQuery(String queryText,
       {Map<String, dynamic> variables = const {}}) async {
-    final connection = await completer.future;
-    return connection.query(queryText);
+    try {
+      final connection = await completer.future;
+      return connection.query(queryText, substitutionValues: variables);
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   @override
   Future<List<CategoryModel>>? getCategories() async {
     try {
-      final result = await _productsQuery(DatabaseQuerys.getCategoriesQuery);
+      final result = await _productsQuery(
+        DatabaseQuerys.getCategoriesQuery,
+      );
       final categoriesList = result!
           .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
           .toList();
@@ -40,6 +50,15 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
     } on Exception catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  @override
+  Future<CategoryModel>? getCategoryById({required String categoryId}) async {
+    final variable = {'categoryid': categoryId};
+    final result = await _productsQuery(DatabaseQuerys.getCategoryById,
+        variables: variable);
+    final categoryMap = result!.first;
+    return CategoryModel.fromMap(categoryMap["AppCategories"]!);
   }
 
   @override
@@ -58,22 +77,70 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   @override
   Future<List<CategoryModel>>? createCategories(
       {CategoryModel? category, ProductModel? product}) async {
-    final categoryMap = category?.toMap();
-    final result = await _productsQuery(DatabaseQuerys.createCategoryQuery,
-        variables: categoryMap!);
-    return result!
-        .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
-        .toList();
+    try {
+      final categoryMap = category?.toMap();
+      categoryMap!["products"] = [product!.toJson()];
+      final result = await _productsQuery(DatabaseQuerys.createCategoryQuery,
+          variables: categoryMap);
+      return result!
+          .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
+          .toList();
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   @override
   Future<List<ProductModel>>? createProducts({ProductModel? product}) async {
-    final productMap = product?.toMap();
-    final result = await _productsQuery(DatabaseQuerys.createProductsQuery,
-        variables: productMap!);
-    return result!
-        .map((item) => ProductModel.fromMap(item["AppProducts"]!))
-        .toList();
+    try {
+      final productMap = product?.toMap();
+      final result = await _productsQuery(DatabaseQuerys.createProductsQuery,
+          variables: productMap!);
+      return result!
+          .map((item) => ProductModel.fromMap(item["AppProducts"]!))
+          .toList();
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void>? addProductToCategory(
+      {ProductModel? product, String? categoryId}) async {
+    final result = await _productsQuery(DatabaseQuerys.addProductQuery,
+        variables: {'categoryid': categoryId!, 'products': product!.toJson()});
+    if (product.cid!.isNotEmpty) {
+      final list = result!.map(
+        (e) {
+          return e["AppCategories"]!["products"] = {
+            'productid': product.productid,
+            'title': product.title,
+            'description': product.description,
+            'price': product.price,
+            'cid': product.cid,
+            'images': product.images,
+            'size': product.size
+          };
+        },
+      ).toList();
+      final categoriesList = list.map((e) => CategoryModel.fromMap(e)).toList();
+      categoriesList.map((e) => e.products!.add(product));
+    } else {
+      throw Exception();
+    }
+  }
+
+  @override
+  Future<ProductModel>? getProductById({ProductModel? product}) async {
+    try {
+      final result = await _singleItemQuery(
+        DatabaseQuerys.getProductById,
+      );
+      final product = result!.map((item) => item).toList();
+      return ProductModel();
+    } on Exception catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   @override
@@ -97,14 +164,5 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
     );
     await connection.open();
     completer.complete(connection);
-  }
-
-  @override
-  Future<ProductModel>? getProductById({ProductModel? product}) async {
-    final result = await _singleItemQuery(
-      DatabaseQuerys.getProductById,
-    );
-    final product = result!.map((item) => item).toList();
-    return ProductModel();
   }
 }

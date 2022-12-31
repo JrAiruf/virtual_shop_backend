@@ -13,27 +13,46 @@ class GetAllProductsRepo implements IProductsRepository {
   @override
   Future<List<AppProducts>> getProducts() async {
     final list = await datasource.getProducts();
-    return list!.map((item) => ProductModel.toAppProduct(product: item)).toList();
+    return list!
+        .map((item) => ProductModel.toAppProduct(product: item))
+        .toList();
   }
 
   @override
   Future<List<AppCategories>>? getCategories() async {
     final list = await datasource.getCategories();
-    return list!.map((item) => CategoryModel.toAppCategory(category: item)).toList();
+    return list!
+        .map((item) => CategoryModel.toAppCategory(category: item))
+        .toList();
   }
 
   @override
   Future<List<AppCategories>>? createCategories(
       {CategoryModel? category, ProductModel? product}) async {
-    final list = await datasource.createCategories(category: category!, product: product!);
-    return list!.map((item) => CategoryModel.toAppCategory(category: category)).toList();
-    
+    final list = await datasource.createCategories(
+        category: category!, product: product!);
+    return list!
+        .map((item) => CategoryModel.toAppCategory(category: category))
+        .toList();
   }
 
   @override
   Future<List<AppProducts>>? createProducts({ProductModel? product}) async {
     final list = await datasource.createProducts(product: product!);
-  return list!.map((item) => ProductModel.toAppProduct(product: product)).toList();
-  
+    return list!
+        .map((item) => ProductModel.toAppProduct(product: product))
+        .toList();
+  }
+
+  @override
+  Future<void>? addProductToCategory(
+      {String? categoryId, ProductModel? product}) async {
+    await datasource.addProductToCategory(product: product!, categoryId: categoryId!);
+  }
+
+  @override
+  Future<CategoryModel>? getCategoryById({required String categoryId}) async {
+    final result = await datasource.getCategoryById(categoryId: categoryId);
+    return result!;
   }
 }

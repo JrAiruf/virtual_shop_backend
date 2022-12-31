@@ -6,5 +6,7 @@ abstract class IProductsDatasource {
   Future<ProductModel>? getProductById({ProductModel product});
   Future<List<ProductModel>>? createProducts({ProductModel product});
   Future<List<CategoryModel>>? getCategories();
+  Future<CategoryModel>? getCategoryById({required String categoryId});
+  Future<void>? addProductToCategory({ProductModel product, String categoryId});
   Future<List<CategoryModel>>? createCategories({CategoryModel category, ProductModel product});
 }

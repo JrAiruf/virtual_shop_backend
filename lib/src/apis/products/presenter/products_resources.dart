@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_modular/shelf_modular.dart';
 import 'package:virtual_shop_backend/src/apis/products/infra/models/category_model.dart';
@@ -11,7 +12,10 @@ class ProductsResources extends Resource {
   List<Route> get routes => [
         Route.get('/categories/products', getProducts),
         Route.get('/categories', getCategories),
+        Route.get('/categories/:id', getCategoryById),
         Route.post('/categories', createCategory),
+        Route.post('/categories/:id', addProductToCategory),
+        Route.post('/categories/products', createProducts),
         Route.post('/categories/products', createProducts),
       ];
 
@@ -19,6 +23,13 @@ class ProductsResources extends Resource {
     final presenter = injector.get<IProductsPresenter>();
     return presenter.getCategories();
   }
+
+  FutureOr<Response> getCategoryById(
+      Injector injector, ModularArguments arguments) async {
+    final presenter = injector.get<IProductsPresenter>();
+    return presenter.getCategoryById(categoryId: arguments.params['id'])!;
+  }
+
   FutureOr<Response> getProducts(Injector injector) async {
     final presenter = injector.get<IProductsPresenter>();
     return presenter.getProducts();
@@ -29,7 +40,7 @@ class ProductsResources extends Resource {
     final category = CategoryModel.fromMap(arguments.data);
     final product = ProductModel.fromMap(arguments.data["products"]);
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.createCategory(category: category,product: product);
+    return presenter.createCategory(category: category, product: product);
   }
 
   FutureOr<Response> createProducts(
@@ -37,6 +48,22 @@ class ProductsResources extends Resource {
     final product = ProductModel.fromMap(arguments.data);
     final presenter = injector.get<IProductsPresenter>();
     return presenter.createProduct(product: product);
+  }
+
+  FutureOr<Response> addProductToCategory(
+      Injector injector, ModularArguments arguments) async {
+    final product = ProductModel.fromMap(arguments.data);
+    final presenter = injector.get<IProductsPresenter>();
+    presenter.addProductToCategory(
+        product: product, categoryId: arguments.params['id']);
+    final body = jsonEncode(product);
+    return Response(
+      200,
+      body: body,
+      headers: {
+        'content-type': 'application/json',
+      },
+    );
   }
 }
 
