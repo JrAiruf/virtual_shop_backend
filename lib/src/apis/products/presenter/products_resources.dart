@@ -1,94 +1,59 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
-import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_modular/shelf_modular.dart';
 import 'package:virtual_shop_backend/src/apis/products/infra/models/category_model.dart';
 import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
 import 'package:virtual_shop_backend/src/apis/products/presenter/presenter_data/iproducts_presenter.dart';
 
+import '../infra/models/cat_and_prod_model.dart';
+
 class ProductsResources extends Resource {
   @override
   List<Route> get routes => [
-        Route.get('/categories/products', getProducts),
-        Route.get('/categories', getCategories),
-        Route.get('/categories/:id', getCategoryById),
-        Route.post('/categories', createCategory),
-        Route.post('/categories/:id', addProductToCategory),
-        Route.post('/categories/products', createProducts),
-        Route.post('/categories/products', createProducts),
+        Route.get('/categories', _getCategories),
+        Route.get('/categories/products', _getProducts),
+        Route.post('/categories', _createCategory),
+        Route.post('/categories/products', _createProducts),
+        Route.get('/categories/:id', _getCategoryById),
+        Route.post('/categoryProducts', _productAndCategoryAssociation),
       ];
 
-  FutureOr<Response> getCategories(Injector injector) async {
+  FutureOr<Response> _getCategories(Injector injector) async {
     final presenter = injector.get<IProductsPresenter>();
     return presenter.getCategories();
   }
 
-  FutureOr<Response> getCategoryById(
-      Injector injector, ModularArguments arguments) async {
-    final presenter = injector.get<IProductsPresenter>();
-    return presenter.getCategoryById(categoryId: arguments.params['id'])!;
-  }
-
-  FutureOr<Response> getProducts(Injector injector) async {
+  FutureOr<Response> _getProducts(Injector injector) async {
     final presenter = injector.get<IProductsPresenter>();
     return presenter.getProducts();
   }
 
-  FutureOr<Response> createCategory(
+  FutureOr<Response> _createCategory(
       Injector injector, ModularArguments arguments) async {
     final category = CategoryModel.fromMap(arguments.data);
-    final product = ProductModel.fromMap(arguments.data["products"]);
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.createCategory(category: category, product: product);
+    return presenter.createCategory(category: category);
   }
 
-  FutureOr<Response> createProducts(
+  FutureOr<Response> _createProducts(
       Injector injector, ModularArguments arguments) async {
     final product = ProductModel.fromMap(arguments.data);
     final presenter = injector.get<IProductsPresenter>();
     return presenter.createProduct(product: product);
   }
 
-  FutureOr<Response> addProductToCategory(
+  FutureOr<Response> _getCategoryById(
       Injector injector, ModularArguments arguments) async {
-    final product = ProductModel.fromMap(arguments.data);
     final presenter = injector.get<IProductsPresenter>();
-    presenter.addProductToCategory(
-        product: product, categoryId: arguments.params['id']);
-    final body = jsonEncode(product);
-    return Response(
-      200,
-      body: body,
-      headers: {
-        'content-type': 'application/json',
-      },
-    );
+    return presenter.getCategoryById(categoryId: arguments.params['id'])!;
+  }
+
+  FutureOr<Response> _productAndCategoryAssociation(
+      Injector injector, ModularArguments arguments) async {
+    final info = CatAndProd.fromMap(arguments.data);
+    final presenter = injector.get<IProductsPresenter>();
+    return presenter.productAndCategoryAssociation(info: info)!;
+
   }
 }
-
-
-
-/* 
-{
-    "id": "{{$randomUUID}}",
-    "title": "Produto Teste1",
-    "description": "Alta Qualidade",
-    "price": 45,
-    "images": [
-        "https: //images.pexels.com/photos/2294342/pexels-photo-2294342.jpeg?auto=compress&cs=tinysrgb&w=600",
-        "https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=600",
-        "https://images.pexels.com/photos/991509/pexels-photo-991509.jpeg?auto=compress&cs=tinysrgb&w=600"
-    ],
-    "size": [
-        "PP",
-        "P",
-        "M",
-        "G",
-        "GG",
-        "XG"
-    ],
-    "category": "Camisetas"
-}
-
- */

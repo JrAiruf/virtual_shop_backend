@@ -1,27 +1,22 @@
 abstract class DatabaseQuerys {
   static const getProductById =
-      ''' SELECT productid, title, cid, price, description, images, "size"
+      ''' SELECT productid, title, price, description, images, "size"
           FROM "AppProducts" 
           WHERE productid = @productid; ''';
-  static const getCategoryById =
-      ''' SELECT *
+  static const getCategoryById = ''' SELECT *
           FROM "AppCategories" 
           WHERE categoryid = @categoryid ''';
-  static const getCategoriesQuery =
-      ''' SELECT * FROM "AppCategories" ''';
+  static const getCategoriesQuery = ''' SELECT * FROM "AppCategories" ''';
   static const getProductsQuery =
-      ''' SELECT productid, title, price, description, images, cid, size FROM public."AppProducts"; ''';
+      ''' SELECT productid, title, price, description, images, size FROM public."AppProducts"; ''';
   static const createProductsQuery =
       ''' INSERT INTO "AppProducts"(productid, title, price, description, images, size) VALUES (@productid, @title, @price, @description, @images, @size) RETURNING productid, title, price, description, images, size; ''';
   static const createCategoryQuery =
-      ''' INSERT INTO "AppCategories" (categoryid, title, iconimage, products)
-          VALUES(@categoryid, @title, @iconimage, @products)
-          RETURNING categoryid, title, iconimage, products;
+      ''' INSERT INTO "AppCategories"(categoryid, title, iconimage)
+          VALUES(@categoryid, @title, @iconimage)
+          RETURNING categoryid, title, iconimage;
         ''';
-  static const addProductQuery = '''
-          UPDATE "AppCategories" 
-          SET products = ARRAY[@products]
-          WHERE categoryid = @categoryid;
+  static const associationQuery = '''
+          INSERT INTO "CatAndProd" (cp_id, cat_id, prod_id) VALUES(@cp_id, @cat_id, @prod_id ) RETURNING cp_id, cat_id, prod_id;
         ''';
- 
 }

@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:virtual_shop_backend/src/apis/products/infra/models/cat_and_prod_model.dart';
 import 'package:virtual_shop_backend/src/apis/products/infra/models/category_model.dart';
 import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
 import 'package:virtual_shop_backend/src/apis/products/products_domain/entities/app_categories.dart';
@@ -11,14 +12,6 @@ class GetAllProductsRepo implements IProductsRepository {
   final IProductsDatasource datasource;
 
   @override
-  Future<List<AppProducts>> getProducts() async {
-    final list = await datasource.getProducts();
-    return list!
-        .map((item) => ProductModel.toAppProduct(product: item))
-        .toList();
-  }
-
-  @override
   Future<List<AppCategories>>? getCategories() async {
     final list = await datasource.getCategories();
     return list!
@@ -27,10 +20,17 @@ class GetAllProductsRepo implements IProductsRepository {
   }
 
   @override
+  Future<List<AppProducts>> getProducts() async {
+    final list = await datasource.getProducts();
+    return list!
+        .map((item) => ProductModel.toAppProduct(product: item))
+        .toList();
+  }
+
+  @override
   Future<List<AppCategories>>? createCategories(
       {CategoryModel? category, ProductModel? product}) async {
-    final list = await datasource.createCategories(
-        category: category!, product: product!);
+    final list = await datasource.createCategories(category: category!);
     return list!
         .map((item) => CategoryModel.toAppCategory(category: category))
         .toList();
@@ -45,14 +45,13 @@ class GetAllProductsRepo implements IProductsRepository {
   }
 
   @override
-  Future<void>? addProductToCategory(
-      {String? categoryId, ProductModel? product}) async {
-    await datasource.addProductToCategory(product: product!, categoryId: categoryId!);
-  }
-
-  @override
   Future<CategoryModel>? getCategoryById({required String categoryId}) async {
     final result = await datasource.getCategoryById(categoryId: categoryId);
     return result!;
+  }
+
+  @override
+  Future<void> productAndCategoryAssociation({CatAndProd? info}) async {
+    await datasource.productAndCategoryAssociation(info: info!);
   }
 }

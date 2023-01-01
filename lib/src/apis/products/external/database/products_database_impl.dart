@@ -6,6 +6,7 @@ import 'package:virtual_shop_backend/src/apis/products/infra/models/category_mod
 import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
 import '../../../../services/dot_env_service/dot_env_service.dart';
 import '../../infra/data/iproducts_datasource.dart';
+import '../../infra/models/cat_and_prod_model.dart';
 import '../../utils/database_querys.dart';
 
 class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
@@ -53,24 +54,6 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   }
 
   @override
-  Future<CategoryModel>? getCategoryById({required String categoryId}) async {
-    final variable = {'categoryid': categoryId};
-    final result = await _productsQuery(DatabaseQuerys.getCategoryById,
-        variables: variable);
-    final categoryData = result!.map((e) => e['AppCategories']).toList();
-    final productList =
-        categoryData.map((e) => CategoryModel.fromMap(e!)).toList();
-    final category = productList.first;
-    final categoryMap = {
-      'categoryid': category.categoryid,
-      'title': category.title,
-      'iconimage': category.iconimage,
-      'products': category.products,
-    };
-    return CategoryModel.fromMap(categoryMap);
-  }
-
-  @override
   Future<List<ProductModel>>? getProducts() async {
     try {
       final result = await _productsQuery(DatabaseQuerys.getProductsQuery);
@@ -86,11 +69,10 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   @override
   Future<List<CategoryModel>>? createCategories(
       {CategoryModel? category, ProductModel? product}) async {
+    final categoryMap = category?.toMap();
     try {
-      final categoryMap = category?.toMap();
-      categoryMap!["products"] = [product!.toJson()];
       final result = await _productsQuery(DatabaseQuerys.createCategoryQuery,
-          variables: categoryMap);
+          variables: categoryMap!);
       return result!
           .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
           .toList();
@@ -114,20 +96,20 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   }
 
   @override
-  Future<void>? addProductToCategory(
-      {ProductModel? product, String? categoryId}) async {
-    final result =
-        await _productsQuery(DatabaseQuerys.addProductQuery, variables: {
-      'categoryid': categoryId!,
-      'products': [product!.toJson()]
-    });
-    if (product.cid!.isNotEmpty) {
-      final list = result!.map((e) => e["AppCategories"]!["products"]).toList();
-      final categoriesList = list.map((e) => CategoryModel.fromMap(e)).toList();
-      categoriesList.map((e) => e.products!.add(product));
-    } else {
-      throw Exception();
-    }
+  Future<CategoryModel>? getCategoryById({required String categoryId}) async {
+    final variable = {'categoryid': categoryId};
+    final result = await _productsQuery(DatabaseQuerys.getCategoryById,
+        variables: variable);
+    final categoryData = result!.map((e) => e['AppCategories']).toList();
+    final productList =
+        categoryData.map((e) => CategoryModel.fromMap(e!)).toList();
+    final category = productList.first;
+    final categoryMap = {
+      'categoryid': category.categoryid,
+      'title': category.title,
+      'iconimage': category.iconimage,
+    };
+    return CategoryModel.fromMap(categoryMap);
   }
 
   @override
@@ -141,6 +123,13 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
     } on Exception catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  @override
+  Future<void> productAndCategoryAssociation(
+      {CatAndProd? info}) async {
+    await _productsQuery(DatabaseQuerys.associationQuery,
+        variables: info!.toMap());
   }
 
   @override

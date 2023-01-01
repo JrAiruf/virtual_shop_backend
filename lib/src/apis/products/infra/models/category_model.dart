@@ -7,16 +7,14 @@ class CategoryModel implements AppCategories {
   String? categoryid;
   String? title;
   String? iconimage;
-  List<AppProducts>? products;
 
-  CategoryModel({this.categoryid, this.title, this.iconimage, this.products});
+  CategoryModel({this.categoryid, this.title, this.iconimage,});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'categoryid': categoryid,
       'title': title,
       'iconimage': iconimage,
-      'products': products,
     };
   }
 

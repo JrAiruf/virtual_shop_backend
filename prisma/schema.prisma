@@ -30,8 +30,8 @@ model AppCategories {
 
 model CatAndProd {
   cp_id   String        @id @default(uuid())
-  cat_id  String
-  prod    AppProducts   @relation(fields: [prod_id], references: [productid])
   prod_id String
+  prod    AppProducts   @relation(fields: [prod_id], references: [productid])
+  cat_id  String
   cat     AppCategories @relation(fields: [cat_id], references: [categoryid])
 }
