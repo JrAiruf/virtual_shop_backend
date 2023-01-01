@@ -57,8 +57,17 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
     final variable = {'categoryid': categoryId};
     final result = await _productsQuery(DatabaseQuerys.getCategoryById,
         variables: variable);
-    final categoryMap = result!.first;
-    return CategoryModel.fromMap(categoryMap["AppCategories"]!);
+    final categoryData = result!.map((e) => e['AppCategories']).toList();
+    final productList =
+        categoryData.map((e) => CategoryModel.fromMap(e!)).toList();
+    final category = productList.first;
+    final categoryMap = {
+      'categoryid': category.categoryid,
+      'title': category.title,
+      'iconimage': category.iconimage,
+      'products': category.products,
+    };
+    return CategoryModel.fromMap(categoryMap);
   }
 
   @override
@@ -107,22 +116,13 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   @override
   Future<void>? addProductToCategory(
       {ProductModel? product, String? categoryId}) async {
-    final result = await _productsQuery(DatabaseQuerys.addProductQuery,
-        variables: {'categoryid': categoryId!, 'products': product!.toJson()});
+    final result =
+        await _productsQuery(DatabaseQuerys.addProductQuery, variables: {
+      'categoryid': categoryId!,
+      'products': [product!.toJson()]
+    });
     if (product.cid!.isNotEmpty) {
-      final list = result!.map(
-        (e) {
-          return e["AppCategories"]!["products"] = {
-            'productid': product.productid,
-            'title': product.title,
-            'description': product.description,
-            'price': product.price,
-            'cid': product.cid,
-            'images': product.images,
-            'size': product.size
-          };
-        },
-      ).toList();
+      final list = result!.map((e) => e["AppCategories"]!["products"]).toList();
       final categoriesList = list.map((e) => CategoryModel.fromMap(e)).toList();
       categoriesList.map((e) => e.products!.add(product));
     } else {

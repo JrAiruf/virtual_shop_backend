@@ -8,7 +8,7 @@ abstract class DatabaseQuerys {
           FROM "AppCategories" 
           WHERE categoryid = @categoryid ''';
   static const getCategoriesQuery =
-      ''' SELECT * FROM "AppCategories" WHERE products != NULL''';
+      ''' SELECT * FROM "AppCategories" ''';
   static const getProductsQuery =
       ''' SELECT productid, title, price, description, images, cid, size FROM public."AppProducts"; ''';
   static const createProductsQuery =
@@ -25,16 +25,3 @@ abstract class DatabaseQuerys {
         ''';
  
 }
-
-
-
-
-/* {"{\"productid\":null,
-\"cid\":\"\",
-\"title\":\"Calças Femininas\",
-\"description\":\"Jeans atraente e de cores vívidas\",
-\"price\":245,
-\"size\":[\"34\",\"36\",\"38\",\"40\",\"42\",\"44\"],
-\"images\":[\"https: //images.pexels.com/photos/2294342/pexels-photo-2294342.jpeg?auto=compress&cs=tinysrgb&w=600\",
-\"https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=600\",
-\"https://images.pexels.com/photos/991509/pexels-photo-991509.jpeg?auto=compress&cs=tinysrgb&w=600\"]}"} */
