@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:virtual_shop_backend/src/apis/products/infra/models/cat_and_prod_model.dart';
-import 'package:virtual_shop_backend/src/apis/products/products_domain/entities/app_categories.dart';
-import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
-import 'package:virtual_shop_backend/src/apis/products/infra/models/category_model.dart';
-import 'package:virtual_shop_backend/src/apis/products/products_domain/entities/app_products.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/infra/models/cat_and_prod_model.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/products_domain/entities/app_categories.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/infra/models/product_model.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/infra/models/category_model.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/products_domain/entities/app_products.dart';
 import '../products_repository/iproducts_repository.dart';
 import 'iproducts_and_categories.dart';
 
@@ -24,6 +24,13 @@ class ProductsAndCategoriesImpl implements IProductsAndCategories {
   }
 
   @override
+  Future<List<ProductModel>>? listCategoryProducts(
+      {CategoryModel? category}) async {
+    final result = await repository.listCategoryProducts(category: category!);
+    return result!;
+  }
+
+  @override
   Future<List<AppCategories>>? createCategories(
       {CategoryModel? category, ProductModel? product}) async {
     final result = await repository.createCategories(category: category!);
@@ -37,14 +44,13 @@ class ProductsAndCategoriesImpl implements IProductsAndCategories {
   }
 
   @override
-  Future<CategoryModel>? getCategoryById({required String categoryId}) async {
+  Future<AppCategories>? getCategoryById({required String categoryId}) async {
     final result = await repository.getCategoryById(categoryId: categoryId);
     return result!;
   }
 
   @override
-  Future<void> productAndCategoryAssociation(
-      {CatAndProd? info}) async {
-    await repository.productAndCategoryAssociation(info:info!);
+  Future<void> productAndCategoryAssociation({CatAndProd? info}) async {
+    await repository.productAndCategoryAssociation(info: info!);
   }
 }

@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:shelf/shelf.dart';
-import 'package:virtual_shop_backend/src/apis/products/presenter/presenter_data/iproducts_presenter.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/presenter/presenter_data/iproducts_presenter.dart';
 import '../../infra/models/cat_and_prod_model.dart';
 import '../../infra/models/category_model.dart';
 import '../../infra/models/product_model.dart';
@@ -125,6 +125,33 @@ class ProductsPresenterImpl implements IProductsPresenter {
     await usecase.productAndCategoryAssociation(info: info!);
     final body = jsonEncode(info.toMap());
 
+    return Response(
+      200,
+      body: body,
+      headers: {
+        'content-type': 'application/json',
+      },
+    );
+  }
+
+  @override
+  Future<Response>? listCategoryProducts({CategoryModel? category}) async {
+    final result = await usecase.listCategoryProducts(category: category!);
+    final productsList = result!.map(
+      (item) => {
+        'categoryid': category.categoryid,
+        'title': category.title,
+        'products': {
+          'productid': item.productid,
+          'title': item.title,
+          'description': item.description,
+          'price': item.price,
+          'images': item.images,
+          'size': item.size
+        }
+      },
+    ).toList();
+    final body = jsonEncode(productsList);
     return Response(
       200,
       body: body,

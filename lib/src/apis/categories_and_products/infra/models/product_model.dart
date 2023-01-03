@@ -1,12 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, annotate_overrides, overridden_fields
 import 'dart:convert';
-import 'package:virtual_shop_backend/src/apis/products/products_domain/entities/app_products.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/products_domain/entities/app_products.dart';
 
 class ProductModel extends AppProducts {
   String? productid;
   String? title;
   String? description;
-  String? cid;
   int? price;
   List<dynamic>? size;
   List<dynamic>? images;
@@ -15,7 +14,6 @@ class ProductModel extends AppProducts {
       {this.description,
       this.size,
       this.images,
-      this.cid,
       this.productid,
       this.title,
       this.price});
@@ -35,7 +33,6 @@ class ProductModel extends AppProducts {
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       productid: map['productid'] != null ? map['productid'] as String : null,
-      cid: map['cid'] != null ? map['cid'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
       description:
           map['description'] != null ? map['description'] as String : null,
@@ -59,7 +56,6 @@ class ProductModel extends AppProducts {
   static ProductModel fromAppProduct(AppProducts proudct) {
     return ProductModel(
       productid: proudct.productid,
-      cid: proudct.cid,
       title: proudct.title,
       description: proudct.description,
       price: proudct.price,

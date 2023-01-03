@@ -1,7 +1,6 @@
 // ignore_for_file: annotate_overrides
 import 'dart:convert';
-import 'package:virtual_shop_backend/src/apis/products/products_domain/entities/app_categories.dart';
-import '../../products_domain/entities/app_products.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/products_domain/entities/app_categories.dart';
 
 class CategoryModel implements AppCategories {
   String? categoryid;

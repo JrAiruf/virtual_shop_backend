@@ -2,9 +2,10 @@
 import 'dart:async';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_modular/shelf_modular.dart';
-import 'package:virtual_shop_backend/src/apis/products/infra/models/category_model.dart';
-import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
-import 'package:virtual_shop_backend/src/apis/products/presenter/presenter_data/iproducts_presenter.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/infra/models/category_model.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/infra/models/product_model.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/presenter/presenter_data/iproducts_presenter.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/products_domain/products_repository/iproducts_repository.dart';
 
 import '../infra/models/cat_and_prod_model.dart';
 
@@ -13,6 +14,7 @@ class ProductsResources extends Resource {
   List<Route> get routes => [
         Route.get('/categories', _getCategories),
         Route.get('/categories/products', _getProducts),
+        Route.get('/categoryProducts/:id', _listProductsByCategory),
         Route.post('/categories', _createCategory),
         Route.post('/categories/products', _createProducts),
         Route.get('/categories/:id', _getCategoryById),
@@ -27,6 +29,14 @@ class ProductsResources extends Resource {
   FutureOr<Response> _getProducts(Injector injector) async {
     final presenter = injector.get<IProductsPresenter>();
     return presenter.getProducts();
+  }
+
+  FutureOr<Response> _listProductsByCategory(
+      Injector injector, ModularArguments arguments) async {
+    final repo = injector.get<IProductsRepository>();
+    final category = await repo.getCategoryById(categoryId: arguments.params['id']);
+    final presenter = injector.get<IProductsPresenter>();
+    return presenter.listCategoryProducts(category: category!)!;
   }
 
   FutureOr<Response> _createCategory(
@@ -54,6 +64,5 @@ class ProductsResources extends Resource {
     final info = CatAndProd.fromMap(arguments.data);
     final presenter = injector.get<IProductsPresenter>();
     return presenter.productAndCategoryAssociation(info: info)!;
-
   }
 }

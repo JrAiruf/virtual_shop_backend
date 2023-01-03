@@ -2,11 +2,11 @@ import 'dart:convert';
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class CatAndProd {
-  String cp_id;
-  String cat_id;
-  String prod_id;
+  String? cp_id;
+  String? cat_id;
+  String? prod_id;
 
-  CatAndProd({required this.cp_id, required this.cat_id, required this.prod_id});
+  CatAndProd({this.cp_id, this.cat_id, this.prod_id});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

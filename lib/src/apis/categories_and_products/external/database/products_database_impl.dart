@@ -2,8 +2,8 @@
 import 'dart:async';
 import 'package:postgres/postgres.dart';
 import 'package:shelf_modular/shelf_modular.dart';
-import 'package:virtual_shop_backend/src/apis/products/infra/models/category_model.dart';
-import 'package:virtual_shop_backend/src/apis/products/infra/models/product_model.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/infra/models/category_model.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/infra/models/product_model.dart';
 import '../../../../services/dot_env_service/dot_env_service.dart';
 import '../../infra/data/iproducts_datasource.dart';
 import '../../infra/models/cat_and_prod_model.dart';
@@ -67,9 +67,19 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   }
 
   @override
+  Future<List<ProductModel>>? listCategoryProducts(
+      {CategoryModel? category}) async {
+    final result = await _productsQuery(DatabaseQuerys.listProductsByCategory,
+        variables: category!.toMap());
+    final list = result!.map((item) => item["AppProducts"]).toList();
+    return list.map((item) => ProductModel.fromMap(item!)).toList();
+  }
+
+  @override
   Future<List<CategoryModel>>? createCategories(
       {CategoryModel? category, ProductModel? product}) async {
     final categoryMap = category?.toMap();
+    final bipbip = await listCategoryProducts(category: category);
     try {
       final result = await _productsQuery(DatabaseQuerys.createCategoryQuery,
           variables: categoryMap!);
@@ -126,8 +136,7 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   }
 
   @override
-  Future<void> productAndCategoryAssociation(
-      {CatAndProd? info}) async {
+  Future<void> productAndCategoryAssociation({CatAndProd? info}) async {
     await _productsQuery(DatabaseQuerys.associationQuery,
         variables: info!.toMap());
   }

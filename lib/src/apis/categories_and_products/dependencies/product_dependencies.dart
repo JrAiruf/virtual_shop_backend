@@ -1,5 +1,5 @@
 import 'package:shelf_modular/shelf_modular.dart';
-import 'package:virtual_shop_backend/src/apis/products/external/database/products_database_impl.dart';
+import 'package:virtual_shop_backend/src/apis/categories_and_products/external/database/products_database_impl.dart';
 import 'package:virtual_shop_backend/src/services/dot_env_service/dot_env_service.dart';
 import '../infra/data/iproducts_datasource.dart';
 import '../infra/repository/get_all_products_repo.dart';
