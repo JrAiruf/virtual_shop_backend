@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:postgres/postgres.dart';
 import 'package:shelf_modular/shelf_modular.dart';
+import 'package:virtual_shop_backend/src/apis/errors/users.dart';
 import 'package:virtual_shop_backend/src/apis/users/infra/models/user_model.dart';
 import 'package:virtual_shop_backend/src/apis/users/utils/user_database_querys.dart';
 import 'package:virtual_shop_backend/src/services/dot_env_service/dot_env_service.dart';
@@ -17,49 +18,68 @@ class AppUserDatabase implements IAppUserDatasource, Disposable {
 
   Future<List<Map<String, Map<String, dynamic>>>>? _userQuery(String queryText,
       {Map<String, dynamic> variables = const {}}) async {
-    final connection = await completer.future;
-    return await connection.mappedResultsQuery(
-      queryText,
-      substitutionValues: variables,
-    );
+    try {
+      final connection = await completer.future;
+      return await connection.mappedResultsQuery(
+        queryText,
+        substitutionValues: variables,
+      );
+    } on Exception catch (e) {
+      throw UserError(error: "Query not succeeded", message: e.toString());
+    }
   }
 
   @override
   Future<List<AppUserModel>>? getAllUsers() async {
-    final result = await _userQuery(UserDatabaseQuerys.getAllUsers);
-    final list =
-        result!.map((item) => AppUserModel.fromMap(item["AppUser"]!)).toList();
-    return list;
+    try {
+      final result = await _userQuery(UserDatabaseQuerys.getAllUsers);
+      final list = result!
+          .map((item) => AppUserModel.fromMap(item["AppUser"]!))
+          .toList();
+      return list;
+    } on Exception catch (e) {
+      throw UserError(error: "Couldn't get users", message: e.toString());
+    }
   }
 
   @override
   Future<AppUserModel>? getUserById({AppUserModel? user}) async {
-    final result = await _userQuery(UserDatabaseQuerys.getUserById,
-        variables: user!.toMap());
-    return result!.map((item) => AppUserModel.fromMap(item["AppUser"]!)).first;
+    try {
+      final result = await _userQuery(UserDatabaseQuerys.getUserById,
+          variables: user!.toMap());
+      return result!
+          .map((item) => AppUserModel.fromMap(item["AppUser"]!)).single;
+    } on Exception catch (e) {
+      throw UserError(error: "Couldn't get user", message: e.toString());
+    }
   }
 
   @override
   Future<AppUserModel>? createUser({AppUserModel? user}) async {
-    final result = await _userQuery(UserDatabaseQuerys.createUser,
-        variables: user!.toMap());
-    return result!.map((item) => AppUserModel.fromMap(item["AppUser"]!)).first;
+    try {
+      final result = await _userQuery(UserDatabaseQuerys.createUser,
+          variables: user!.toMap());
+      return result!
+          .map((item) => AppUserModel.fromMap(item["AppUser"]!))
+          .first;
+    } on Exception catch (e) {
+      throw UserError(error: "Couldn't create user", message: e.toString());
+    }
   }
 
   @override
   Future<void>? deleteUser({AppUserModel? user}) async {
-    await _userQuery(UserDatabaseQuerys.deleteUser, variables: user!.toMap());
-  }
-
-  @override
-  Future<void>? signIn() {
-    // TODO: implement signIn
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void>? signOut() {
-     throw UnimplementedError();
+    try {
+      final result = await _userQuery(UserDatabaseQuerys.deleteUser,
+          variables: user!.toMap());
+      if (result!.isNotEmpty) {
+        await _userQuery(UserDatabaseQuerys.deleteUser,
+            variables: user.toMap());
+      } else {
+      }
+    } on Exception catch (e) {
+      throw UserError(error: "Couldn't delete user", message: e.toString());
+    }
   }
 
   @override
@@ -84,5 +104,4 @@ class AppUserDatabase implements IAppUserDatasource, Disposable {
     await connection.open();
     completer.complete(connection);
   }
-
 }

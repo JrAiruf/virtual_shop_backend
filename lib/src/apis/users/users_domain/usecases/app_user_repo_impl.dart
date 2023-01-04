@@ -32,16 +32,4 @@ class AppUserRepoImpl implements IAppUserUsecases {
   Future<void>? deleteUser({AppUserModel? user}) async {
     await repository.deleteUser(user: user!);
   }
-
-  @override
-  Future<void>? signIn() {
-    // TODO: implement signIn
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void>? signOut() {
-    // TODO: implement signOut
-    throw UnimplementedError();
-  }
 }

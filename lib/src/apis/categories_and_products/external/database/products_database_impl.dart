@@ -111,7 +111,8 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
       final result = await _productsQuery(DatabaseQuerys.getProductById,
           variables: product!.toMap());
       return result!
-          .map((item) => ProductModel.fromMap(item["AppProducts"]!)).first;
+          .map((item) => ProductModel.fromMap(item["AppProducts"]!))
+          .first;
     } on Exception catch (e) {
       throw CategoriesProductsError(
           message: "Couldn't access this product", error: e.toString());
@@ -133,14 +134,13 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   }
 
   @override
-  Future<void> productAndCategoryAssociation({CatAndProd? info}) async {
+  Future<CatAndProd> createAssociation({CatAndProd? info}) async {
     try {
-      await _productsQuery(DatabaseQuerys.associationQuery,
+      final result = await _productsQuery(DatabaseQuerys.associationQuery,
           variables: info!.toMap());
-    } on Exception catch (e) {
-      throw CategoriesProductsError(
-          message: "Couldn't associate products and categories",
-          error: e.toString());
+      return result!.map((item) => CatAndProd.fromMap(item["CatAndProd)"]!)).first;
+    } catch (e) {
+      throw CategoriesProductsError(message: e.toString());
     }
   }
 

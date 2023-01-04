@@ -27,12 +27,11 @@ class GetAllProductsRepo implements IProductsRepository {
   Future<List<AppProducts>> getProducts() async {
     final list = await datasource.getProducts();
     if (list != null && list.isNotEmpty) {
-  return list
-      .map((item) => ProductModel.toAppProduct(product: item))
-      .toList();
-}
- throw CategoriesProductsError(message: "Couldn't get products");
-
+      return list
+          .map((item) => ProductModel.toAppProduct(product: item))
+          .toList();
+    }
+    throw CategoriesProductsError(message: "Couldn't get products");
   }
 
   @override
@@ -40,9 +39,10 @@ class GetAllProductsRepo implements IProductsRepository {
       {CategoryModel? category}) async {
     final result = await datasource.listCategoryProducts(category: category!);
     if (result != null && result.isNotEmpty) {
-  return result;
-}
-throw CategoriesProductsError(message: "Couldn't to list category products");
+      return result;
+    }
+    throw CategoriesProductsError(
+        message: "Couldn't to list category products");
   }
 
   @override
@@ -50,46 +50,48 @@ throw CategoriesProductsError(message: "Couldn't to list category products");
       {CategoryModel? category, ProductModel? product}) async {
     final list = await datasource.createCategories(category: category!);
     if (list != null && list.isNotEmpty) {
-  return list
-      .map((item) => CategoryModel.toAppCategory(category: category))
-      .toList();
-}
-throw CategoriesProductsError(message: "Couldn't create category");
+      return list
+          .map((item) => CategoryModel.toAppCategory(category: category))
+          .toList();
+    }
+    throw CategoriesProductsError(message: "Couldn't create category");
   }
 
   @override
   Future<List<AppProducts>>? createProducts({ProductModel? product}) async {
     final list = await datasource.createProducts(product: product!);
     if (list != null && list.isNotEmpty) {
-  return list
-      .map((item) => ProductModel.toAppProduct(product: product))
-      .toList();
-}
-throw CategoriesProductsError(message: "Couldn't create product");
+      return list
+          .map((item) => ProductModel.toAppProduct(product: product))
+          .toList();
+    }
+    throw CategoriesProductsError(message: "Couldn't create product");
   }
 
   @override
   Future<CategoryModel>? getCategoryById({CategoryModel? category}) async {
     final result = await datasource.getCategoryById(category: category!);
     if (result != null) {
-  return result;
-}
-throw CategoriesProductsError(message: "Couldn't access category");
+      return result;
+    }
+    throw CategoriesProductsError(message: "Couldn't access category");
   }
+
   @override
   Future<ProductModel>? getProductById({ProductModel? product}) async {
     final result = await datasource.getProductById(product: product!);
     if (result != null) {
-  return result;
-}
-throw CategoriesProductsError(message: "Couldn't access product");
+      return result;
+    }
+    throw CategoriesProductsError(message: "Couldn't access product");
   }
 
   @override
-  Future<void> productAndCategoryAssociation({CatAndProd? info}) async {
+  Future<CatAndProd> createAssociation({CatAndProd? info}) async {
     if (info != null) {
-  await datasource.productAndCategoryAssociation(info: info);
-}
-throw CategoriesProductsError(message: "Couldn't associate the products");
+      final result = await datasource.createAssociation();
+      return result;
+    }
+    throw Exception();
   }
 }

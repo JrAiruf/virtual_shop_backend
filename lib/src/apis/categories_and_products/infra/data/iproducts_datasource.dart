@@ -11,6 +11,6 @@ abstract class IProductsDatasource {
   Future<CategoryModel>? getCategoryById({CategoryModel category});
   Future<ProductModel>? getProductById({ProductModel product});
   Future<List<ProductModel>>? listCategoryProducts( {CategoryModel category});
-  Future<void> productAndCategoryAssociation({CatAndProd info});
+  Future<CatAndProd> createAssociation({CatAndProd info});
   
 }

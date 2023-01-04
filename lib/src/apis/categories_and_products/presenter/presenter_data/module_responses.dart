@@ -6,7 +6,7 @@ import 'package:virtual_shop_backend/src/apis/categories_and_products/products_d
 
 import '../../infra/models/cat_and_prod_model.dart';
 
-abstract class ModuleResponse {
+abstract class ModuleResponses {
   static Future<Response> getAllCategories({List<AppCategories>? list}) async {
     if (list != null && list.isNotEmpty) {
       final body = list
@@ -198,11 +198,11 @@ abstract class ModuleResponse {
   }
 
 static  Future<Response> productAndCategoryAssociation({CatAndProd? info}) async {
-    if (info != null && info.cat_id!.isNotEmpty && info.prod_id!.isNotEmpty) {
-      final body = jsonEncode(info.toMap());
+    if (info != null) {
+      final body = info.toMap();
       return Response(
         200,
-        body: body,
+        body: jsonEncode(body),
         headers: {
           'content-type': 'application/json',
         },
