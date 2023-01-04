@@ -12,6 +12,6 @@ abstract class IProductsRepository {
   Future<CategoryModel>? getCategoryById({CategoryModel category});
   Future<ProductModel>? getProductById({ProductModel product});
   Future<List<ProductModel>>? listCategoryProducts({CategoryModel category});
-  Future<CatAndProd> createAssociation({CatAndProd info});
+  Future<void> createAssociation({CatAndProd info});
     
 }

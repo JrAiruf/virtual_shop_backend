@@ -87,11 +87,7 @@ class GetAllProductsRepo implements IProductsRepository {
   }
 
   @override
-  Future<CatAndProd> createAssociation({CatAndProd? info}) async {
-    if (info != null) {
-      final result = await datasource.createAssociation();
-      return result;
-    }
-    throw Exception();
+  Future<void> createAssociation({CatAndProd? info}) async {
+      await datasource.createAssociation(info: info!);
   }
 }

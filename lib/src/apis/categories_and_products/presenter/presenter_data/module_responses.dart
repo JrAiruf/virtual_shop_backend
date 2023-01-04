@@ -190,14 +190,17 @@ abstract class ModuleResponses {
     }
     return Response(
       400,
-      body: jsonEncode({"message": "Couldn't to list products"}),
+      body: jsonEncode(
+        {"message": "Couldn't to list products"},
+      ),
       headers: {
         'content-type': 'application/json',
       },
     );
   }
 
-static  Future<Response> productAndCategoryAssociation({CatAndProd? info}) async {
+  static Future<Response> productAndCategoryAssociation(
+      {CatAndProd? info}) async {
     if (info != null) {
       final body = info.toMap();
       return Response(

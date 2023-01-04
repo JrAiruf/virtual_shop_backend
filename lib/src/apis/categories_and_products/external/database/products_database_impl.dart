@@ -20,14 +20,9 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   Future<List<Map<String, Map<String, dynamic>>>>? _productsQuery(
       String queryText,
       {Map<String, dynamic> variables = const {}}) async {
-    try {
-      final connection = await completer.future;
-      return await connection.mappedResultsQuery(queryText,
-          substitutionValues: variables);
-    } on Exception catch (e) {
-      throw CategoriesProductsError(
-          message: "Query search Failed", error: e.toString());
-    }
+    final connection = await completer.future;
+    return await connection.mappedResultsQuery(queryText,
+        substitutionValues: variables);
   }
 
   @override
@@ -134,14 +129,9 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
   }
 
   @override
-  Future<CatAndProd> createAssociation({CatAndProd? info}) async {
-    try {
-      final result = await _productsQuery(DatabaseQuerys.associationQuery,
-          variables: info!.toMap());
-      return result!.map((item) => CatAndProd.fromMap(item["CatAndProd)"]!)).first;
-    } catch (e) {
-      throw CategoriesProductsError(message: e.toString());
-    }
+  Future<void> createAssociation({CatAndProd? info}) async {
+    await _productsQuery(DatabaseQuerys.associationQuery,
+        variables: info!.toMap());
   }
 
   @override

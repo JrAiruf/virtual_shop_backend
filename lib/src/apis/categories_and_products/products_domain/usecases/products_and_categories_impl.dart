@@ -56,8 +56,8 @@ class ProductsAndCategoriesImpl implements IProductsAndCategories {
   }
 
   @override
-  Future<CatAndProd> productAndCategoryAssociation({CatAndProd? info}) async {
-    final result = await repository.createAssociation(info: info!);
-    return result;
+  Future<void> productAndCategoryAssociation({CatAndProd? info}) async {
+     await repository.createAssociation(info: info!);
+    
   }
 }

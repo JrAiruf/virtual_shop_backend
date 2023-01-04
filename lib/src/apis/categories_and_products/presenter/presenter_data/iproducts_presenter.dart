@@ -10,8 +10,8 @@ abstract class IProductsPresenter {
   FutureOr<Response> getProducts();
   FutureOr<Response> createCategory({CategoryModel category});
   FutureOr<Response> createProduct({ProductModel product});
-  FutureOr<Response>? getCategoryById({CategoryModel category});
-  FutureOr<Response>? getProductById({ProductModel product});
-  FutureOr<Response>? listCategoryProducts({CategoryModel category});
-  FutureOr<Response>? productAndCategoryAssociation({CatAndProd info});
+  FutureOr<Response> getCategoryById({CategoryModel category});
+  FutureOr<Response> getProductById({ProductModel product});
+  FutureOr<Response> listCategoryProducts({CategoryModel category});
+  FutureOr<Response> productAndCategoryAssociation({CatAndProd info});
 }

@@ -37,7 +37,7 @@ class ProductsResources extends Resource {
     final category = CategoryModel.fromMap(arguments.params);
     category.categoryid = arguments.params['id'];
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.getCategoryById(category: category)!;
+    return presenter.getCategoryById(category: category);
   }
 
   FutureOr<Response> _getProductById(
@@ -45,7 +45,7 @@ class ProductsResources extends Resource {
     final product = ProductModel.fromMap(arguments.params);
     product.productid = arguments.params['id'];
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.getProductById(product: product)!;
+    return presenter.getProductById(product: product);
   }
 
   FutureOr<Response> _createCategory(
@@ -69,13 +69,13 @@ class ProductsResources extends Resource {
     category.categoryid =  arguments.params['id'];
        final categoryInfo =  await repo.getCategoryById(category: category);
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.listCategoryProducts(category: categoryInfo!)!;
+    return presenter.listCategoryProducts(category: categoryInfo!);
   }
 
   FutureOr<Response> _productAndCategoryAssociation(
       Injector injector, ModularArguments arguments) async {
     final info = CatAndProd.fromMap(arguments.data);
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.productAndCategoryAssociation(info: info)!;
+    return presenter.productAndCategoryAssociation(info: info);
   }
 }

@@ -37,26 +37,26 @@ class ProductsPresenterImpl implements IProductsPresenter {
   }
 
   @override
-  FutureOr<Response>? getCategoryById({CategoryModel? category}) async {
+  FutureOr<Response> getCategoryById({CategoryModel? category}) async {
     final result = await usecase.getCategoryById(category: category!);
     return ModuleResponses.getCategoryById(category: result);
   }
 
   @override
-  FutureOr<Response>? getProductById({ProductModel? product}) async {
+  FutureOr<Response> getProductById({ProductModel? product}) async {
     final result = await usecase.getProductById(product: product!);
     return ModuleResponses.getProductById(product: result!);
   }
 
   @override
-  FutureOr<Response>? listCategoryProducts({CategoryModel? category}) async {
+  FutureOr<Response> listCategoryProducts({CategoryModel? category}) async {
     final result = await usecase.listCategoryProducts(category: category!);
     return ModuleResponses.listCategoryProducts(
         products: result, category: category);
   }
 
   @override
-  FutureOr<Response>? productAndCategoryAssociation({CatAndProd? info}) async {
+  FutureOr<Response> productAndCategoryAssociation({CatAndProd? info}) async {
     await usecase.productAndCategoryAssociation(info: info!);
     return ModuleResponses.productAndCategoryAssociation(info: info);
   }
