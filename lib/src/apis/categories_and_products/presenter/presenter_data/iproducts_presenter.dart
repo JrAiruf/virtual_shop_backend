@@ -8,9 +8,10 @@ import '../../infra/models/cat_and_prod_model.dart';
 abstract class IProductsPresenter {
   FutureOr<Response> getCategories();
   FutureOr<Response> getProducts();
-  Future<Response>? listCategoryProducts({CategoryModel category});
   FutureOr<Response> createCategory({CategoryModel category});
   FutureOr<Response> createProduct({ProductModel product});
-  Future<Response>? getCategoryById({required String categoryId});
+  Future<Response>? getCategoryById({CategoryModel category});
+  Future<Response>? getProductById({ProductModel product});
+  Future<Response>? listCategoryProducts({CategoryModel category});
   Future<Response>? productAndCategoryAssociation({CatAndProd info});
 }

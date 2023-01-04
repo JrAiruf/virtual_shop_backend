@@ -35,3 +35,11 @@ model CatAndProd {
   cat_id  String
   cat     AppCategories @relation(fields: [cat_id], references: [categoryid])
 }
+
+model AppUser {
+  user_id  String   @id @default(uuid())
+  email    String
+  name    String
+  password String
+  city     String
+}

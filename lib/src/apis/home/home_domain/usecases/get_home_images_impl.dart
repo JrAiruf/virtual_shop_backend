@@ -16,8 +16,7 @@ class GetHomeImagesImpl implements IGetHomeImages {
   }
 
   @override
-  Future<List<HomeImages>>? uploadImages({HomeImagesModel? image}) async {
-   final result = await repository.uploadImages(image: image!);
-    return result;
+  Future<void>? uploadImages({HomeImagesModel? image}) async {
+    await repository.uploadImages(image: image!);
   }
 }

@@ -7,9 +7,10 @@ import '../entities/app_categories.dart';
 abstract class IProductsAndCategories {
   Future<List<AppCategories>>? getCategories();
   Future<List<AppProducts>>? getProducts();
-  Future<List<ProductModel>>? listCategoryProducts( {CategoryModel category});
   Future<List<AppCategories>>? createCategories( {CategoryModel category});
   Future<List<AppProducts>>? createProducts({ProductModel product});
+  Future<AppCategories>? getCategoryById({CategoryModel category});
+  Future<AppProducts>? getProductById({ProductModel product});
+  Future<List<AppProducts>>? listCategoryProducts({CategoryModel category});
   Future<void> productAndCategoryAssociation({CatAndProd info});
-  Future<AppCategories>? getCategoryById({required String categoryId});
 }

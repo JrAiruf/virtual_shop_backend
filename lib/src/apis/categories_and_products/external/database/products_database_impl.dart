@@ -5,6 +5,7 @@ import 'package:shelf_modular/shelf_modular.dart';
 import 'package:virtual_shop_backend/src/apis/categories_and_products/infra/models/category_model.dart';
 import 'package:virtual_shop_backend/src/apis/categories_and_products/infra/models/product_model.dart';
 import '../../../../services/dot_env_service/dot_env_service.dart';
+import '../../../errors/categories_and_products.dart';
 import '../../infra/data/iproducts_datasource.dart';
 import '../../infra/models/cat_and_prod_model.dart';
 import '../../utils/database_querys.dart';
@@ -24,17 +25,8 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
       return await connection.mappedResultsQuery(queryText,
           substitutionValues: variables);
     } on Exception catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-
-  Future<PostgreSQLResult>? _singleItemQuery(String queryText,
-      {Map<String, dynamic> variables = const {}}) async {
-    try {
-      final connection = await completer.future;
-      return connection.query(queryText, substitutionValues: variables);
-    } on Exception catch (e) {
-      throw Exception(e.toString());
+      throw CategoriesProductsError(
+          message: "Query search Failed", error: e.toString());
     }
   }
 
@@ -49,7 +41,8 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
           .toList();
       return categoriesList;
     } on Exception catch (e) {
-      throw Exception(e.toString());
+      throw CategoriesProductsError(
+          message: "Couldn't access categoires", error: e.toString());
     }
   }
 
@@ -62,24 +55,15 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
           .toList();
       return productsList;
     } on Exception catch (e) {
-      throw Exception(e.toString());
+      throw CategoriesProductsError(
+          message: "Couldn't access products", error: e.toString());
     }
-  }
-
-  @override
-  Future<List<ProductModel>>? listCategoryProducts(
-      {CategoryModel? category}) async {
-    final result = await _productsQuery(DatabaseQuerys.listProductsByCategory,
-        variables: category!.toMap());
-    final list = result!.map((item) => item["AppProducts"]).toList();
-    return list.map((item) => ProductModel.fromMap(item!)).toList();
   }
 
   @override
   Future<List<CategoryModel>>? createCategories(
       {CategoryModel? category, ProductModel? product}) async {
     final categoryMap = category?.toMap();
-    final bipbip = await listCategoryProducts(category: category);
     try {
       final result = await _productsQuery(DatabaseQuerys.createCategoryQuery,
           variables: categoryMap!);
@@ -87,7 +71,8 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
           .map((item) => CategoryModel.fromMap(item["AppCategories"]!))
           .toList();
     } on Exception catch (e) {
-      throw Exception(e.toString());
+      throw CategoriesProductsError(
+          message: "Couldn't create category", error: e.toString());
     }
   }
 
@@ -101,44 +86,62 @@ class ProductsDatabaseImpl implements IProductsDatasource, Disposable {
           .map((item) => ProductModel.fromMap(item["AppProducts"]!))
           .toList();
     } on Exception catch (e) {
-      throw Exception(e.toString());
+      throw CategoriesProductsError(
+          message: "Couldn't create product", error: e.toString());
     }
   }
 
   @override
-  Future<CategoryModel>? getCategoryById({required String categoryId}) async {
-    final variable = {'categoryid': categoryId};
-    final result = await _productsQuery(DatabaseQuerys.getCategoryById,
-        variables: variable);
-    final categoryData = result!.map((e) => e['AppCategories']).toList();
-    final productList =
-        categoryData.map((e) => CategoryModel.fromMap(e!)).toList();
-    final category = productList.first;
-    final categoryMap = {
-      'categoryid': category.categoryid,
-      'title': category.title,
-      'iconimage': category.iconimage,
-    };
-    return CategoryModel.fromMap(categoryMap);
+  Future<CategoryModel>? getCategoryById({CategoryModel? category}) async {
+    try {
+      final result = await _productsQuery(DatabaseQuerys.getCategoryById,
+          variables: category!.toMap());
+      return result!
+          .map((item) => CategoryModel.fromMap(item['AppCategories']!))
+          .first;
+    } on Exception catch (e) {
+      throw CategoriesProductsError(
+          message: "Couldn't access this category", error: e.toString());
+    }
   }
 
   @override
   Future<ProductModel>? getProductById({ProductModel? product}) async {
     try {
-      final result = await _singleItemQuery(
-        DatabaseQuerys.getProductById,
-      );
-      final product = result!.map((item) => item).toList();
-      return ProductModel();
+      final result = await _productsQuery(DatabaseQuerys.getProductById,
+          variables: product!.toMap());
+      return result!
+          .map((item) => ProductModel.fromMap(item["AppProducts"]!)).first;
     } on Exception catch (e) {
-      throw Exception(e.toString());
+      throw CategoriesProductsError(
+          message: "Couldn't access this product", error: e.toString());
+    }
+  }
+
+  @override
+  Future<List<ProductModel>>? listCategoryProducts(
+      {CategoryModel? category}) async {
+    try {
+      final result = await _productsQuery(DatabaseQuerys.listProductsByCategory,
+          variables: category!.toMap());
+      final list = result!.map((item) => item["AppProducts"]).toList();
+      return list.map((item) => ProductModel.fromMap(item!)).toList();
+    } on Exception catch (e) {
+      throw CategoriesProductsError(
+          message: "Couldn't to list products", error: e.toString());
     }
   }
 
   @override
   Future<void> productAndCategoryAssociation({CatAndProd? info}) async {
-    await _productsQuery(DatabaseQuerys.associationQuery,
-        variables: info!.toMap());
+    try {
+      await _productsQuery(DatabaseQuerys.associationQuery,
+          variables: info!.toMap());
+    } on Exception catch (e) {
+      throw CategoriesProductsError(
+          message: "Couldn't associate products and categories",
+          error: e.toString());
+    }
   }
 
   @override

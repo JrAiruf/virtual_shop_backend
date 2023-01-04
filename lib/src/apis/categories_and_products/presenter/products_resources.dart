@@ -14,10 +14,11 @@ class ProductsResources extends Resource {
   List<Route> get routes => [
         Route.get('/categories', _getCategories),
         Route.get('/categories/products', _getProducts),
-        Route.get('/categoryProducts/:id', _listProductsByCategory),
         Route.post('/categories', _createCategory),
         Route.post('/categories/products', _createProducts),
         Route.get('/categories/:id', _getCategoryById),
+        Route.get('/categories/products/:id', _getProductById),
+        Route.get('/categoryProducts/:id', _listProductsByCategory),
         Route.post('/categoryProducts', _productAndCategoryAssociation),
       ];
 
@@ -31,12 +32,20 @@ class ProductsResources extends Resource {
     return presenter.getProducts();
   }
 
-  FutureOr<Response> _listProductsByCategory(
+  FutureOr<Response> _getCategoryById(
       Injector injector, ModularArguments arguments) async {
-    final repo = injector.get<IProductsRepository>();
-    final category = await repo.getCategoryById(categoryId: arguments.params['id']);
+    final category = CategoryModel.fromMap(arguments.params);
+    category.categoryid = arguments.params['id'];
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.listCategoryProducts(category: category!)!;
+    return presenter.getCategoryById(category: category)!;
+  }
+
+  FutureOr<Response> _getProductById(
+      Injector injector, ModularArguments arguments) async {
+    final product = ProductModel.fromMap(arguments.params);
+    product.productid = arguments.params['id'];
+    final presenter = injector.get<IProductsPresenter>();
+    return presenter.getProductById(product: product)!;
   }
 
   FutureOr<Response> _createCategory(
@@ -53,10 +62,14 @@ class ProductsResources extends Resource {
     return presenter.createProduct(product: product);
   }
 
-  FutureOr<Response> _getCategoryById(
+  FutureOr<Response> _listProductsByCategory(
       Injector injector, ModularArguments arguments) async {
+    final repo = injector.get<IProductsRepository>();
+    final category = CategoryModel.fromMap(arguments.params);
+    category.categoryid =  arguments.params['id'];
+       final categoryInfo =  await repo.getCategoryById(category: category);
     final presenter = injector.get<IProductsPresenter>();
-    return presenter.getCategoryById(categoryId: arguments.params['id'])!;
+    return presenter.listCategoryProducts(category: categoryInfo!)!;
   }
 
   FutureOr<Response> _productAndCategoryAssociation(

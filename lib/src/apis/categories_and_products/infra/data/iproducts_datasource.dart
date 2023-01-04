@@ -6,11 +6,11 @@ import '../models/cat_and_prod_model.dart';
 abstract class IProductsDatasource {
   Future<List<CategoryModel>>? getCategories();
   Future<List<ProductModel>>? getProducts();
-  Future<List<ProductModel>>? listCategoryProducts( {CategoryModel category});
   Future<List<CategoryModel>>? createCategories({CategoryModel category});
   Future<List<ProductModel>>? createProducts({ProductModel product});
-  Future<CategoryModel>? getCategoryById({required String categoryId});
+  Future<CategoryModel>? getCategoryById({CategoryModel category});
   Future<ProductModel>? getProductById({ProductModel product});
+  Future<List<ProductModel>>? listCategoryProducts( {CategoryModel category});
   Future<void> productAndCategoryAssociation({CatAndProd info});
   
 }

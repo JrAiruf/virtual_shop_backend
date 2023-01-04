@@ -24,13 +24,6 @@ class ProductsAndCategoriesImpl implements IProductsAndCategories {
   }
 
   @override
-  Future<List<ProductModel>>? listCategoryProducts(
-      {CategoryModel? category}) async {
-    final result = await repository.listCategoryProducts(category: category!);
-    return result!;
-  }
-
-  @override
   Future<List<AppCategories>>? createCategories(
       {CategoryModel? category, ProductModel? product}) async {
     final result = await repository.createCategories(category: category!);
@@ -44,8 +37,20 @@ class ProductsAndCategoriesImpl implements IProductsAndCategories {
   }
 
   @override
-  Future<AppCategories>? getCategoryById({required String categoryId}) async {
-    final result = await repository.getCategoryById(categoryId: categoryId);
+  Future<AppCategories>? getCategoryById({CategoryModel? category}) async {
+    final result = await repository.getCategoryById(category: category!);
+    return result!;
+  }
+  @override
+  Future<AppProducts>? getProductById({ProductModel? product}) async {
+    final result = await repository.getProductById(product: product!);
+    return result!;
+  }
+
+ @override
+  Future<List<ProductModel>>? listCategoryProducts(
+      {CategoryModel? category}) async {
+    final result = await repository.listCategoryProducts(category: category!);
     return result!;
   }
 

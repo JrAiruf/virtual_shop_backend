@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:postgres/postgres.dart';
 import 'package:shelf_modular/shelf_modular.dart';
+import 'package:virtual_shop_backend/src/apis/errors/home.dart';
 import 'package:virtual_shop_backend/src/apis/home/infra/models/home_images.dart';
+import 'package:virtual_shop_backend/src/apis/home/utils/home_database_querys.dart';
 import 'package:virtual_shop_backend/src/services/dot_env_service/dot_env_service.dart';
 import '../../infra/data/iget_home_images_datasource.dart';
 
@@ -25,28 +27,27 @@ class HomeDatabaseImpl implements IGetHomeImagesDatasource, Disposable {
   @override
   Future<List<HomeImagesModel>>? getHomeImages() async {
     try {
-      final result = await _imagesQuery(
-        'SELECT id, url, "position", "xAxis", "yAxis" FROM "HomeImages";',
-      );
+      final result = await _imagesQuery(HomeDatabaseQuerys.getImagesQuery);
       final imagesList = result
           ?.map((item) => HomeImagesModel.fromMap(item['HomeImages']!))
           .toList();
       return imagesList!;
-    } catch (e) {
-      throw Exception(e.toString());
+    } on Exception catch (e) {
+      throw HomeErrors(message: "Could'not download images",error: e.toString());
     }
   }
 
   @override
-  Future<List<HomeImagesModel>>? uploadImages({HomeImagesModel? images}) async {
+  Future<void>? uploadImages({HomeImagesModel? images}) async {
     final imageMap = images?.toMap();
-    imageMap!.remove('id');
-    final result = await _imagesQuery(
-        'INSERT INTO "HomeImages"(url, position, "xAxis", "yAxis") VALUES (@url, @position, @xAxis, @yAxis) RETURNING id, url, position,"xAxis", "yAxis";',
-        variables: imageMap);
-    return result!
-        .map((item) => HomeImagesModel.fromMap(item["HomeImages"]!))
-        .toList();
+    try {
+      await _imagesQuery(
+        HomeDatabaseQuerys.uploadImageQuery,
+        variables: imageMap!,
+      );
+    } on Exception catch (e) {
+      throw HomeErrors(message: "Could'not Upload image",error: e.toString());
+    }
   }
 
   @override
