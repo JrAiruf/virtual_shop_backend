@@ -5,6 +5,7 @@ import 'package:virtual_shop_backend/src/apis/categories_and_products/dependenci
 import 'package:virtual_shop_backend/src/apis/categories_and_products/presenter/products_resources.dart';
 import 'package:virtual_shop_backend/src/apis/users/dependencies/app_user_dependencies.dart';
 import 'package:virtual_shop_backend/src/apis/users/presenter/user_resources.dart';
+import 'package:virtual_shop_backend/src/services/swagger/swagger_handler.dart';
 
 class IJMainModule extends Module {
   @override
@@ -15,6 +16,7 @@ class IJMainModule extends Module {
       ];
   @override
   List<ModularRoute> get routes => [
+        Route.get('/docs/**', swaggerHandler),
         Route.resource(HomeResources()),
         Route.resource(ProductsResources()),
         Route.resource(UserResources()),

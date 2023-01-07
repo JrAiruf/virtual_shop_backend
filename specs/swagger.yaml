@@ -1,0 +1,499 @@
+openapi: 3.0.0
+info:
+  description: "API IJ Store"
+  version: "1.0.10"
+  title: "Swagger Test"
+servers:
+  - url: http://localhost:4466
+    description: Local server
+tags:
+  - name: "User"
+    description: "Application Users"
+
+  - name: "Categories and Products"
+    description: "All about categories and products"
+
+paths:
+  /images:
+    get:
+      tags:
+        - "Images"
+      description: "Get Home Images"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Home"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/IJException"
+    post:
+      tags:
+        - "Images"
+      description: "Upload new Home Image"
+      requestBody:
+        description: "Update application images by adding one"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadImages"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/GetCategories"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/IJException"
+
+  /categories:
+    get:
+      tags:
+        - "Categories and Products"
+      summary: "Get Categories"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/GetCategories"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/IJException"
+    post:
+      tags:
+        - "Categories and Products"
+      summary: "Upload new Home Image"
+      requestBody:
+        description: "Create and save a category"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategory"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/GetCategories"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/IJException"
+  /categories/products:
+    get:
+      tags:
+        - "Categories and Products"
+      summary: "Get products"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/GetProducts"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/IJException"
+    post:
+      tags:
+        - "Categories and Products"
+      summary: "Create product"
+      requestBody:
+        description: "Create and save a product"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProducts"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/GetProducts"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/IJException"
+
+  /categories/{id}:
+    get:
+      tags:
+        - "Categories and Products"
+      summary: "Get Category by id"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/GetCategories"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/IJException"
+
+  /categories/products/{id}:
+    get:
+      tags:
+        - "Categories and Products"
+      summary: "Get product by id"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/GetProducts"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/IJException"
+
+  /categoryProducts:
+    post:
+      tags:
+        - "Categories and Products"
+      summary: "Create relation between categories and products"
+      requestBody:
+        description: "Create relationship between items"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRelation"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/CreateRelation"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/IJException"
+
+  /categoryProducts/{id}:             
+    get:
+      tags:
+        - "Categories and Products"
+      summary: "Get category and Products related"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/CategoryAndProducts"
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/IJException"
+
+  /users:
+      get:
+        tags:
+          - "User"
+        summary: "Get Users"
+        responses:
+          "200":
+            description: ""
+            content:
+              application/json:
+                schema:
+                  items:
+                    $ref: "#/components/schemas/User"
+          "404":
+            description: ""
+            content:
+              application/json:
+                schema:
+                  items:
+                    $ref: "#/components/schemas/IJException"
+      post:
+        tags:
+          - "User"
+        summary: "Create user"
+        requestBody:
+          description: "Create user account"
+          content:
+            application/json:
+              schema:  
+                $ref: "#/components/schemas/CreateUser"
+
+        responses:
+          "200":
+            description: ""
+            content:
+              application/json:
+                schema:
+                  items:
+                    $ref: "#/components/schemas/User"
+          "404":
+            description: ""
+            content:
+              application/json:
+                schema:
+                  items:
+                    $ref: "#/components/schemas/IJException"
+
+  /users/{id}:
+      get:
+        tags:
+          - "User"
+        summary: "Get user by id"
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        responses:
+          "200":
+            description: ""
+            content:
+              application/json:
+                schema:
+                  items:
+                    $ref: "#/components/schemas/User"
+          "404":
+            description: ""
+            content:
+              application/json:
+                schema:
+                  items:
+                    $ref: "#/components/schemas/IJException"
+      delete:
+        tags:
+          - "User"
+        summary: "Delete User"
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        responses:
+          "200":
+            description: ""
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+          "404":
+            description: ""
+            content:
+              application/json:
+                schema:
+                  items:
+                    $ref: "#/components/schemas/IJException"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        city:
+          type: string
+
+    CreateUser:
+      type: object
+      properties:
+        user_id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        city:
+          type: string
+
+    Home:
+      type: object
+      properties:
+        image_id:
+          type: integer
+        url:
+          type: string
+        position:
+          type: integer
+        xAxis:
+          type: integer
+        yAxis:
+          type: integer
+
+    UploadImages:
+      type: object
+      properties:
+        url:
+          type: string
+        position:
+          type: integer
+        xAxis:
+          type: integer
+        yAxis:
+          type: integer
+
+    GetCategories:
+      type: object
+      properties:
+        categoryid:
+          type: string
+        title:
+          type: string
+        iconImage:
+          type: string
+
+    CreateCategory:
+      type: object
+      properties:
+        categoryid:
+          type: string
+        title:
+          type: string
+        iconImage:
+          type: string
+
+    GetProducts:
+      type: object
+      properties:
+        productid:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+        size: 
+          type: array
+          items:
+            $ref: "#/components/schemas/productSize"
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/productImages"
+
+    CreateProducts:
+      type: object
+      properties:
+        productid:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+        size: 
+          type: array
+          items:
+            $ref: "#/components/schemas/productSize"
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/productImages"
+
+    CreateRelation:
+      type: object
+      properties:
+        cp_id:
+          type: string
+        cat_id:
+          type: string
+        prod_id:
+          type: string
+    
+    CategoryAndProducts:
+      type: object
+      properties:
+        categoryid:
+          type: string
+        title:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/GetProducts"
+
+    IJException:
+      type: object
+      properties:
+        error:
+          default: error message
+          items:
+            type: string
+    
+    productSize:
+      type: string
+    productImages:
+      type: string  
